@@ -1,0 +1,32 @@
+---
+layout: post
+title: Trust issues working on a network share in Visual Studio 2008
+date: 2009-02-14 00:12:55.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- Software Development
+tags:
+- Microsoft Visual Studio 2008
+- Network share
+- programming
+meta:
+  _edit_last: '2'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461214902;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:2112;}i:1;a:1:{s:2:"id";i:91;}i:2;a:1:{s:2:"id";i:477;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>An unfortunate combination of my rear-wheeled drive car and the mini-ice age which hit us here in Northamptonshire left me stranded and working from home earlier this week. Not a problem I thought, as I had previously taken the liberty of backing up my current source onto the USB stick I carry with me and already had a VMWare Fusion image with XP and MS Visual Studio 2008 on my MacBook.</p>
+<p>So in went the USB key, project folder copied to my "Documents" folder and the XP virtual machine opened. But after browsing to the network drive which VMWare maps onto my OS X "Documents" folder and opening the solution file, I was greeted with something that looks like this:</p>
+<p><img class="alignnone size-full wp-image-70" title="Visual Studio 2008 - Network Share Project Not Trusted Dialog" src="{{ site.baseurl }}/assets/vsnetworkprojnottrusted.png" alt="Visual Studio 2008 - Network Share Project Not Trusted Dialog" width="413" height="226" /></p>
+<p>A quick google search for this error message brought me to <a href="http://msdn.microsoft.com/en-us/library/bs2bkwxc.aspx" target="&lt;/a&gt;_blank">this MSDN article</a> which looked promising, but despite having a full VS 2008 SP1 install on my machine I couldn't find Mscorcfg.msc anywhere, and the suggested Caspol.exe command just didn't work!</p>
+<p>According to <a href="http://msdn.microsoft.com/en-us/library/2bc0cxhc.aspx" target="&lt;/a&gt;_blank">this article</a>, I needed to install the .NET Framework 2.0 Software Development Kit (SDK) (x86) from <a href="http://www.microsoft.com/downloads/details.aspx?FamilyID=FE6F2099-B7B4-4F47-A244-C96D69C35DEC&amp;displaylang=en" target="&lt;/a&gt;_blank">here</a> to then get the "Microsoft .NET Framework 2.0 Configuration" tool which should help. Once all 300+mb of it was downloaded and installed it then appeared in my Control Panel -&gt; Administrative Tools, progress at last!</p>
+<p>In the tool, expand "My Computer" and select "Runtime Security Policy" to get the following:</p>
+<p><img class="alignnone size-full wp-image-79" title="Microsoft .NET Framework 2.0 Configuration Tool" src="{{ site.baseurl }}/assets/net-framework-2-configuration.png" alt="Microsoft .NET Framework 2.0 Configuration Tool" width="746" height="536" /></p>
+<p>From here I was then able to select "Adjust Zone Security" to be taken to the "Security Adjustment Wizard". After selecting whether I want to make changes to the computer or current user only (I chose computer) and clicking "Next", I was taken to the important part, the zone security level settings. The problem with trusted network shares appears to be caused by the "Local Intranet" zone defaulting to one "notch" below "Full Trust", causing all sorts of havoc to my VS2008 security. By moving the slider up to "Full Trust" for the "Local Intranet" zone and clicking "Next" and then "Finish" to close the wizard I was then able to successfully load, compile and debug VS2008 projects located on a network share.</p>
+<p>I must admit that I'm still not 100% convinced that this is either the correct or even a safe solution so please exercise caution when changing zone security settings, especially on networks with internet access, and feel free to set me straight in the comments if this is far off the mark, but in the meantime it has at least enabled me to perform the tasks I have been able to carry out with every other IDE I've ever used and develop code on a network share!</p>

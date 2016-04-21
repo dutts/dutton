@@ -1,0 +1,59 @@
+---
+layout: post
+title: Using data bound properties in the WPF ValidationRule
+date: 2013-05-08 10:46:40.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- .Net
+- C#
+- Software Development
+- WPF
+tags:
+- .NET
+- .net 4.5
+- bindingexpression
+- bound property in validationrule
+- c#
+- databinding
+- programming
+- resolvedsource
+- validation rule
+- validationrule
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _wpas_skip_2785187: '1'
+  _wpas_skip_3579159: '1'
+  _wpas_skip_2785197: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461271063;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:2862;}i:1;a:1:{s:2:"id";i:346;}i:2;a:1:{s:2:"id";i:1732;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>I recently needed to use to make sure that a number entered into a text box was less than the value of a property on my view model.</p>
+<p>Arguably, this sort of business logic might be better off inside my view model; possibly let the property get set regardless, then verify and do something with <a href="http://msdn.microsoft.com/en-us/library/system.componentmodel.idataerrorinfo.aspx">IDataErrorInfo</a> to notify the GUI if it's wrong before updating my model data if required. But in this case I am binding straight onto a property which is held inside a class I cannot modify, so I decided to try and use WPF's built-in binding validation mechanism.</p>
+<p>So far so good; off I went deriving from <em>ValidationRule</em> and overriding <em>Validate</em>, but I soon came a cropper trying to access the view model.&nbsp;The problem is that <em>ValidationRule</em> isn't a <em>DependencyObject</em> so I can't add a dependency property to bind my view model to, and the specifics of my usage (this <em>TextBox</em> is dynamically generated in a <em>DataGrid</em> in code, but that's for another blog post), meant that the solution suggested <a href="http://social.msdn.microsoft.com/forums/en-US/wpf/thread/982e2fcf-780f-4f1c-9730-cedcd4e24320/">here</a> didn't help me, the binding fails at the point the <em>TextBox</em> is created so never gets updated when it's finally set.</p>
+<p>So after a bit of a dig about in the MSDN I found that if you set</p>
+<pre name="code" class="c-sharp">ValidationStop = ValidationStep.UpdatedValue</pre>
+<p>on the <em>ValidationRule</em> the value parameter in the <em>Validate</em> method is the <em>BindingExpression</em> itself, from which you can query <em>DataItem</em> to get the binding source object that the expression uses (which in my case is my view model).</p>
+<p>Great stuff, but now how do I get my actual value from the <em>BindingExpression</em>? I can't use <em>SourceValue</em>, or <em>SourceItem</em>, because even though under the debugger they show my value, they are both internal.</p>
+<p>So along comes .Net 4.5 to the rescue with a new <a href="http://msdn.microsoft.com/en-us/library/system.windows.data.bindingexpression.resolvedsource.aspx"><em>ResolvedSource</em> </a>property for <em>BindingExpression</em> which will return the binding source object, in this case the TextBox text property which means I can do something like this:</p>
+<pre name="code" class="c-sharp">public class NumberIsGreaterThanVmValidationRule : ValidationRule
+{
+  public override ValidationResult Validate(object value, System.Globalization.CultureInfo cultureInfo)
+  {
+    var result = new ValidationResult(true, null);
+
+    var vm = ((BindingExpression) value).DataItem as MyViewModel;
+    var val = (int)((BindingExpression) value).ResolvedSource;
+
+    if (val.Value &lt; vm.ComparisonValue) result = new ValidationResult(false, "Number is less than allowed value");
+
+    return result;
+  }
+}</pre>

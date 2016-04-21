@@ -1,0 +1,43 @@
+---
+layout: post
+title: 'How to fix: "Unable to Activate Windows Store App. The activation request
+  failed with error..."'
+date: 2013-02-18 23:51:40.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- .Net
+- C#
+- Microsoft
+- Software Development
+- Visual Studio 2012
+- Windows 8 Store App
+tags:
+- .NET
+- c#
+- microsoft
+- programming
+- unable to active windows store app
+- Visual Studio 2012
+- vs2012
+- windows 8 development
+- windows 8 store app
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461319104;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:444;}i:1;a:1:{s:2:"id";i:662;}i:2;a:1:{s:2:"id";i:422;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>Those of you who know me will know that I'm a bit of an Apple fan-boy, so anything running Windows natively has over the years experienced a rather unceremonious departure from my tech collection.</p>
+<p>That does make my current pet project of playing around with Windows 8 App Store development slightly tricky, so I've turned to virtualising Windows 8 under VMWare Fusion to get my out of work C# fix. This generally works well, except I seem to regularly run into this error when I first run my app.</p>
+<p><a href="http://www.dutton.me.uk/wp-content/uploads/2013/02/Unable-to-activate-Windows-Store-app-Issue-with-its-license.jpg"><img class="aligncenter size-full wp-image-479" alt="Unable-to-activate-Windows-Store-app-Issue-with-its-license" src="{{ site.baseurl }}/assets/Unable-to-activate-Windows-Store-app-Issue-with-its-license.jpg" width="494" height="230" /></a></p>
+<p>I think it may be something to do with the way I regularly suspend and resume (instead of shutting down) my VM in between work stints causing some problems with the built-in development licensing that Microsoft now uses.</p>
+<p>I've read online that some people have had success just performing a "Clean" and then "Build" in VS2012, but that doesn't seem to work for me, instead I have to close the solution and delete my project's <strong>bin </strong>and <strong>obj </strong>folders.</p>
+<p>Hope this helps someone.</p>
+<p>&nbsp;</p>

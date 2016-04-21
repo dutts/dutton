@@ -1,0 +1,36 @@
+---
+layout: post
+title: '"Cannot set build environment" installing PRISM 4.1 under VS 2012'
+date: 2012-11-16 09:16:49.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- .Net
+- PRISM
+- Software Development
+tags:
+- .NET
+- PRISM
+- programming
+- Visual Studio 2012
+meta:
+  _edit_last: '2'
+  _wpas_skip_2785187: '1'
+  _wpas_skip_2785197: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461281803;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:2112;}i:1;a:1:{s:2:"id";i:5342;}i:2;a:1:{s:2:"id";i:3232;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>I can't believe it's been over a year since I last posted, I guess that's F1 for you =)</p>
+<p>Anyway, I've had some time this morning to work on personal projects at home and came across a problem trying to install PRISM 4.1 on Visual Studio 2012.</p>
+<p>When I try to register the PRISM binaries on my system (RegisterPrismBinaries.bat), I get the following error</p>
+<blockquote><p>PRISM 'VS100COMNTOOLS' not set. Cannot set the build environment</p></blockquote>
+<p>Visual Studio 2012 doesn't register this path.</p>
+<p>To fix this, add the following to the start of RegisterPrismBinaries.bat:</p>
+<blockquote><p>SET VS100COMNTOOLS=C:Program Files (x86)Microsoft Visual Studio 11.0Common7Tools</p></blockquote>
+<p>Or wherever your vsvars32.bat from Visual Studio 2012 lives.</p>

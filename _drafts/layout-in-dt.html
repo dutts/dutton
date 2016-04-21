@@ -1,0 +1,42 @@
+---
+layout: post
+title: Layout in DT
+date: 
+type: post
+published: false
+status: draft
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  _publicize_facebook_user: https://www.facebook.com/dutts303
+  _publicize_twitter_user: '@dutts303'
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>    <grid></p>
+<listbox itemssource="{Binding Data, Mode=OneWay}">
+<listbox.itemtemplate>
+                <datatemplate></p>
+<listbox itemssource="{Binding}">
+<listbox.itemtemplate>
+                            <datatemplate><br />
+                                <border borderbrush="{x:Null}" height="36" background="LightGreen"><br />
+                                    <textblock text="{Binding}" width="36" textalignment="Center" verticalalignment="Center" /><br />
+                                </border><br />
+                            </datatemplate>
+                        </listbox.itemtemplate>
+<listbox.itemspanel>
+                            <itemspaneltemplate><br />
+                                <stackpanel orientation="Horizontal" /><br />
+                            </itemspaneltemplate>
+                        </listbox.itemspanel>
+                    </listbox>
+                </datatemplate>
+            </listbox.itemtemplate>
+        </listbox>
+    </grid></p>

@@ -1,0 +1,40 @@
+---
+layout: post
+title: Personal Route Logging with MobileMe's Find My iPhone
+date: 2009-09-27 16:16:13.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- Apple
+- iPhone
+- Javascript
+- PHP
+- Software Development
+tags:
+- Apple
+- find my iphone
+- google maps
+- google maps api
+- iPhone
+- mobileme
+- PHP
+meta:
+  _edit_last: '2'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461260066;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:2072;}i:1;a:1:{s:2:"id";i:4802;}i:2;a:1:{s:2:"id";i:131;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p><a href="http://www.apple.com/mobileme/whats-new/"><img class="alignright" title="Find My iPhone" src="{{ site.baseurl }}/assets/fmip_messages_20100622.png" alt="" width="358" height="294" /></a>Although I'm struggling to achieve a happy co-existence between Google's Calendars and Contacts and my MobileMe subscription (still fighting dupes and funny syncs with the wrong numbers being associated with the wrong contacts etc... but that's for another blog post!), one part of MobileMe I was keen to do something with was their "Locate My iPhone" feature. Regular apps aren't allowed to run in the background on the iPhone, making any form of auto-updating tracking application all a bit "manual"  (e.g. Google Latitude on the iPhone), Apple have provided the ability to get the location of your iPhone automatically, but as it's <a href="http://www.apple.com/mobileme/whats-new/" target="_blank">officially</a> being touted as a feature to use when you've lost your iPhone it's tucked away within the "Account Settings" section of the MobileMe web page.</p>
+<p>This was screaming out to be screen-scraped and <!--more-->developer Tyler Hall has stepped up to the plate with <a href="http://clickontyler.com/blog/2009/06/sosumi-a-mobileme-scraper/" target="_blank">Sosumi - A MobileMe Scraper</a>. Using Sosumi is literally a case of including the class in your PHP, instantiating it with your MobileMe username and password and calling its locate method which returns an object containing the current latitude, longitude and result accuracy, it's as simple as that!</p>
+<p>At the moment I've got a cron job on my server hitting this every five minutes and logging to a database. If the data hasn't changed since the last logged entry, a counter is incremented and timestamp_last is set. A very simple Google Map displays these locations as points on a map but I've got loads of ideas of stuff to play about with, such as:</p>
+<ul>
+<li>Plot the reported accuracy of each location as a circle on the map, more Google Maps fiddling.</li>
+<li>Modify which points are mapped based on time and date ranges through the webpage, some PHP + AJAX experience.</li>
+<li>Store locations of common places I visit, then for each point logged (taking into account the accuracy range) I can programatically work out where I am.  Could then auto-generate "Richard is at work", "Richard is at home", etc... reports for my blog/twitter/facebook etc... =).</li>
+</ul>
+<p>Bit sad I know, but it seemed too good for a total sync-monkey like myself and I'll never pass up an opportunity, however contrived, for a PHP mash-up!</p>

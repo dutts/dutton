@@ -1,0 +1,84 @@
+---
+layout: post
+title: How to create an MDI interface with Unity & Prism
+date: 
+type: post
+published: false
+status: draft
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>    public class MdiContainerRegionAdapter : RegionAdapterBase<mdicontainer><br />
+    {<br />
+        public MdiContainerRegionAdapter(IRegionBehaviorFactory factory)<br />
+            : base(factory)<br />
+        {</p>
+<p>        }</p>
+<p>        protected override void Adapt(IRegion region, MdiContainer regionTarget)<br />
+        {<br />
+            region.Views.CollectionChanged += (sender, args) =><br />
+            {<br />
+                if (args.Action == NotifyCollectionChangedAction.Add)<br />
+                {<br />
+                    foreach (MdiWindow window in args.NewItems)<br />
+                    {<br />
+                        var mdiChild = new MdiChild<br />
+                            {<br />
+                                Title = window.Title,<br />
+                                Content = window.Content,<br />
+                                MinWidth = window.MinWidth,<br />
+                                MinHeight = window.MinHeight,<br />
+                                Width = window.Width,<br />
+                                Height = window.Height<br />
+                            };<br />
+                        mdiChild.Closing += (o, eventArgs) => ((ClosingEventArgs) eventArgs).Cancel = true;<br />
+                        regionTarget.Children.Add(mdiChild);<br />
+                    }<br />
+                }</p>
+<p>                regionTarget.Children.CollectionChanged += (o, eventArgs) =><br />
+                    {<br />
+                        switch (eventArgs.Action)<br />
+                        {<br />
+                            case NotifyCollectionChangedAction.Remove:<br />
+                                {<br />
+                                    foreach (var item in eventArgs.OldItems)<br />
+                                    {<br />
+                                        Debug.WriteLine(eventArgs.OldStartingIndex + ":" + (item as MdiChild).Content);<br />
+                                    }<br />
+                                    break;<br />
+                                }<br />
+                        }</p>
+<p>                    };<br />
+            };<br />
+        }</p>
+<p>        protected override IRegion CreateRegion()<br />
+        {<br />
+            return new AllActiveRegion();<br />
+        }<br />
+    }</p>
+<p>in your bootstrapper</p>
+<p>        protected override RegionAdapterMappings ConfigureRegionAdapterMappings()<br />
+        {<br />
+            var mappings = base.ConfigureRegionAdapterMappings();<br />
+            mappings.RegisterMapping(typeof(MdiContainer), Container.Resolve<mdicontainerregionadapter>());<br />
+            return mappings;<br />
+        }</p>
+<p>in your module's InitialiseModule() call </p>
+<p>            var mdiWindow = new MdiWindow()<br />
+                {<br />
+                    Title = viewModel.Name,<br />
+                    Content = view,<br />
+                    MinWidth = 700,<br />
+                    Width = 700,<br />
+                    MinHeight = 400,<br />
+                    Height = 400<br />
+                };</p>
+<p>            _regionManager.Regions[RegionNames.MainRegion].Add(mdiWindow);</mdicontainerregionadapter></mdicontainer></p>

@@ -1,0 +1,35 @@
+---
+layout: post
+title: Returning errorlevels from C# applications
+date: 2009-01-22 16:19:58.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- C#
+tags:
+- batch file
+- c#
+- errorlevel
+- programming
+meta:
+  _edit_last: '2'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461257005;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:1002;}i:1;a:1:{s:2:"id";i:5892;}i:2;a:1:{s:2:"id";i:518;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>Something came up today which turned out to be a bit of a blast from the past. If you want to check the return value of a C# console application (for use in an old school batch file for example) you can't rely on the return value of main (as you would in C for example), but have to set the value of System.Environment.ExitCode instead. The advantage to this over a single return statement is this call sets the exit code and won't actually exit your program at that point, see below.</p>
+<pre name="code" class="c-sharp">
+static void Main(string[] args)
+{
+	// program code...
+	// now set the return value to 1
+	System.Environment.ExitCode = 1
+}
+</pre>
+<p>This example returns 1, which can then be picked up by some good ol' fashioned batch command-goodness. I'm already reminiscing back to my 1000+ line BBS mailer batch file back in 1995!</p>
+<p>Also came across <a href="http://tldp.org/LDP/abs/html/exitcodes.html" target="_blank">this</a> which provides guidance on the special meanings of some exit codes.</p>

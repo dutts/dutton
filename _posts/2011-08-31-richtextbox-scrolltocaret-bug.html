@@ -1,0 +1,70 @@
+---
+layout: post
+title: RichTextBox ScrollToCaret() bug
+date: 2011-08-31 10:23:02.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- C#
+- Software Development
+- Windows Forms
+tags:
+- bug
+- c#
+- programming
+- richtextbox
+- scroll
+- scrolltocaret
+- win forms
+- windows forms
+- winforms
+meta:
+  _edit_last: '2'
+  _wpas_skip_2785187: '1'
+  _wpas_skip_2785197: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461315091;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:2172;}i:1;a:1:{s:2:"id";i:518;}i:2;a:1:{s:2:"id";i:1732;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>I recently needed to add selective colour to text in a Windows Forms TextBox. TextBox doesn't support this, but its close sibling RichTextBox does and as they both derive from TextBoxBase, the conversion in code was painless.</p>
+<p>The original TextBox control would automatically set the caret (cursor) position to the end of the text and use ScrollToCaret() to ensure the last line was always visible after dynamically adding content. This doesn't quite work the same when called on a RichTextBox as it appears to scroll until just the very top of the caret is visible, resulting in at best a few pixels of the last line's text visible.</p>
+<p>Quite a bit of googling of the problem reveals lots of discussion but not much in the way of a suggested solution.</p>
+<p>Fortunately, user32.dll provides calls we can use to set the scroll position and we can access these unmanaged functions through P/Invoke as follows:</p>
+<pre name="code" class="c-sharp">
+[StructLayout(LayoutKind.Sequential)]
+public class POINT
+{
+    public int x;
+    public int y;
+
+    public POINT()
+    {
+    }
+
+    public POINT(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+}
+
+const int SB_VERT = 1;
+const int EM_SETSCROLLPOS = 0x0400 + 222;
+
+[DllImport("user32", CharSet = CharSet.Auto)]
+static extern bool GetScrollRange(IntPtr hWnd, int nBar, out int lpMinPos, out int lpMaxPos);
+
+[DllImport("user32", CharSet = CharSet.Auto)]
+static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, POINT lParam)
+</pre>
+<p>Then, when you want to set the scroll position ("control" is your RichTextBox instance):</p>
+<pre name="code" class="c-sharp">
+int min, max;
+GetScrollRange(control.Handle, SB_VERT, out min, out max);
+SendMessage(control.Handle, EM_SETSCROLLPOS, 0, new POINT(0, max - control.Height));
+</pre>

@@ -1,0 +1,78 @@
+---
+layout: post
+title: How to handle Command Line Arguments in WPF Applications
+date: 2011-02-21 16:12:03.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- C#
+- Software Development
+- WPF
+tags:
+- Application
+- arguments
+- c#
+- command line
+- command line arguments
+- programming
+- Startup
+- StartupEventArgs
+- WPF
+meta:
+  _edit_last: '2'
+  _wp_old_slug: ''
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461192796;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:323;}i:1;a:1:{s:2:"id";i:1942;}i:2;a:1:{s:2:"id";i:2172;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>I've not considered it before as up to now I haven't required it, but obviously in a WPF Application you don't have a nice</p>
+<pre name="code" class="c-sharp">static void Main(string[] args)
+{
+...
+}</pre>
+<p>with a useful string array of arguments like you do in a regular C# console app, so how do you access them?</p>
+<p>In a default WPF application, the entry point to the program is <!--more-->the <strong>Application</strong> object. This object has an event <strong>Startup</strong> which is fired, unsurprisingly on startup of your app and contains <strong>StartupEventArgs</strong>. You can query this object to get to your arguments as follows:</p>
+<pre name="code" class="c-sharp">
+public partial class App : Application
+ {
+   /// 
+   /// A static string array containing our start-up command line arguments
+   /// 
+   public static string[] Args;
+
+   protected override void OnStartup(StartupEventArgs e)
+   {
+       Args = e.Args;
+       base.OnStartup(e);
+   }
+}</pre>
+<p>Store them in a static member and then you can access them elsewhere in your application as <strong>Apps.Args</strong>.</p>
+<p>So far, so good. But what happens if you actually need some arguments to run, and so want to check and fail gracefully if they don't exist? I found that if I checked in my <strong>OnStartup</strong> handler, I still couldn't halt the start-up of my application on error.</p>
+<p>Instead, I added a <strong>Loaded</strong> event handler to my MainWindow. This is fired once the Application and MainWindow have been loaded so I know I my static Args member will have been set by the time it is fired. I can do all the validation I want on my argument array and decide whether to continue execution or stop and provide an error to the user.</p>
+<pre name="code" class="c-sharp">
+public MainWindow()
+{
+     InitializeComponent();
+
+     // Make sure the command line arguments have been processed
+     this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
+}
+
+void MainWindow_Loaded(object sender, RoutedEventArgs e)
+{
+    if (App.Args.Length == 1)
+    {
+        // everything is good, do stuff
+    }
+    else
+    {
+        // ERROR!!!
+        MessageBox.Show("Not enough arguments!");
+        App.Current.Shutdown();
+     }
+}</pre>

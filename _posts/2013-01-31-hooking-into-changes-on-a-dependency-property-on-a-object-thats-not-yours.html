@@ -1,0 +1,39 @@
+---
+layout: post
+title: Hooking into changes on a Dependency Property on an object that's not yours
+date: 2013-01-31 21:25:09.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- .Net
+- C#
+- Software Development
+tags:
+- .NET
+- c#
+- dependency properties
+- depenedency property
+- descriptor
+- programming
+- value changed
+meta:
+  _edit_last: '2'
+  _wpas_mess: Hooking into changes on a Dependency Property on a object that's not
+    yours
+  _wpas_skip_2785187: '1'
+  _wpas_skip_2785197: '1'
+  _wpas_done_all: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461282515;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:518;}i:1;a:1:{s:2:"id";i:2172;}i:2;a:1:{s:2:"id";i:346;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>I came across a scenario today where I needed to hook into dependency property changes on an object that wasn't mine and found this new trick I'd not seen before, you can get the property's descriptor and add a new value changed handler in code.</p>
+<pre name="code" class="c-sharp">var descriptor = DependencyPropertyDescriptor.FromProperty(RadioButton.IsCheckedProperty, typeof(RadioButton));
+descriptor.AddValueChanged(radioButton, (s,e) =&gt; { /* ... */ });</pre>
+<p>Don't forget to remove the handler again once you're finished with it to prevent memory leaks like so.</p>
+<pre name="code" class="c-sharp">descriptor.RemoveValueChanged(...);</pre>

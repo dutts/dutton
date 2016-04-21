@@ -1,0 +1,25 @@
+---
+layout: post
+title: Detecting mouse events on WPF DataGrid RowItems
+date: 
+type: post
+published: false
+status: draft
+categories:
+- Microsoft
+- Software Development
+- WPF
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>private void MyDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)<br />
+{<br />
+e.Row.MouseDoubleClick += MyDataGridRow_DoubleClick;<br />
+}</p>

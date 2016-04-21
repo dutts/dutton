@@ -1,0 +1,39 @@
+---
+layout: post
+title: How to install a specific version of a package with nuget
+date: 2013-07-24 10:21:39.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- Microsoft
+- Software Development
+- Visual Studio 2012
+tags:
+- install old version
+- install specific version nuget
+- Install-Package
+- Microsoft Visual Studio 2012
+- nuget
+- old version
+- previous version
+- programming
+- specific version
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461289913;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:405;}i:1;a:1:{s:2:"id";i:510;}i:2;a:1:{s:2:"id";i:3572;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>I am having a few problems with the latest version of AvalonDock (in particular my custom PRISM RegionAdapter implementation, blog post\moan to follow one day when I get a chance) so have had to roll back to the version I developed under which worked for me.</p>
+<p>You can't do this via the "Manage nuget packages" dialog in Visual Studio as that only lets you install\uninstall\manage the latest version of packages, so you have to fire up the "Package Manager Console" (under View -&gt; Other Windows, if you don't already have it open) and use the command line.</p>
+<p>The command to list available versions is:</p>
+<blockquote><p>Get-Package -ListAvailable -Filter AvalonDock -AllVersions</p></blockquote>
+<p>And then you can use the following to install a specific version (make sure you have the project you want to install into selected in the "Default project" drop-down) :</p>
+<blockquote><p>Install-Package AvalonDock -Version 2.0.1320</p></blockquote>
+<p>And lo and behold, you have 2.0.1320 of AvalonDock installed and your RegionAdapter suddenly works again!</p>

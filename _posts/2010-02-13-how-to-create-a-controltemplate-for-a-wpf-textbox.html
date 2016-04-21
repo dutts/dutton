@@ -1,0 +1,59 @@
+---
+layout: post
+title: How to create a ControlTemplate for a WPF TextBox
+date: 2010-02-13 06:00:10.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- C#
+- Software Development
+- WPF
+tags:
+- c#
+- ContentHost
+- ControlTemplate
+- PART_ContentHost
+- programming
+- ScrollViewer
+- style
+- TextBox
+- WPF
+- x:Name
+- x:Name="Part_ContentHost"
+meta:
+  _edit_last: '2'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461320972;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:323;}i:1;a:1:{s:2:"id";i:2172;}i:2;a:1:{s:2:"id";i:346;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>This is a short post, but has one specific piece of information I want to keep.</p>
+<p>Q: If you want to create a ControlTemplate to provide a custom style for a TextBox, how do you specify where the text goes when it's used in WPF?</p>
+<p>A: The answer was hidden in the depths of the MSDN Documentation. You have to include a &lt;ScrollViewer&gt; within your ControlTemplate with an x:Name value of "PART_ContentHost".</p>
+<p>Here's a noddy example:</p>
+<pre name="code" class="xml">
+<style targettype="{x:Type TextBox}">
+    <Setter Property="Template">
+        <Setter.Value>
+            <ControlTemplate TargetType="{x:Type TextBox}">
+                <DockPanel>
+                    <Border BorderThickness="1" 
+                               BorderBrush="DarkGray" 
+                               Background="White" 
+                               Width="100">
+                        <DockPanel>
+                            <ScrollViewer Background="Transparent"                      
+                                               HorizontalAlignment="Stretch"  
+                                               x:Name="PART_ContentHost"/>
+                        </DockPanel>
+                    </Border>
+                </DockPanel>
+            </ControlTemplate>
+        </Setter.Value>
+    </Setter>
+</style>
+</pre>

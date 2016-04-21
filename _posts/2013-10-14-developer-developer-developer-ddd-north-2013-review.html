@@ -1,0 +1,88 @@
+---
+layout: post
+title: Developer! Developer! Developer! (DDD) North 2013 Review
+date: 2013-10-14 18:30:33.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- Conferences
+- Software Development
+tags:
+- conference
+- DDD
+- DDD North
+- DDDNorth
+- Developer Developer Developer
+- software
+- Sunderland
+- user group
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1458969334;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:1962;}i:1;a:1:{s:2:"id";i:378;}i:2;a:1:{s:2:"id";i:323;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>This weekend, with understanding wife and baby in tow, I took the loooong trip up north to Sunderland to attend <a href="http://dddnorth.co.uk/">DDD North 2013</a>. After having such a good time at DDD East Anglia <a href="http://dutton.me.uk/2013/06/29/developer-developer-developer-east-anglia-2013/">earlier this year</a> I was keen to sign up for more DDD events and this one didn't disappoint. Slightly bigger than DDDEA, this event had five streams of talks across a broad spread of .Net and related topics.</p>
+<p>[caption id="" align="alignnone" width="1024"]<img class="size-full " title="DDD North 2013" alt="20131014-135631.jpg" src="{{ site.baseurl }}/assets/20131014-135631.jpg" width="1024" height="768" /> The wrap up final session at DDD North, bring on the swag![/caption]</p>
+<p>The venue was the University of Sunderland's "Prospect Building and David Goldman Informatics Centre", a modern building with views of the River Wear. It was difficult to pick which talks to attend as they all sounded so good, but in the end I opted for:</p>
+<h2><strong>F# Eye for the C# Guy (Phil Trelford, @ptrelford)<br />
+</strong></h2>
+<p>I was looking forward to this as so far have found F# a bit of a struggle, not helped by the fact that I've never found any examples relevant to the kind of stuff I tend to do.</p>
+<p>Phil opened with a background of F#, discussed some of the applications he's been involved in, such as the multiplayer skill matching on Halo 3 - a machine learning algorithm which then went on to be used across the whole of XBox Live, written in F#, before introducing some of the basics, static typing, syntax, and converted a simple POCO C# class into F#. This significantly reduced the amount of code in the process, meaning less code to maintain, and ultimately less bugs. The way you define classes (or "types" and "modules" in F# lingo) make it really useful for mapping out domains, and he explained how his current projects tend to go down this route; F# for domain modelling and business logic and C# at the front end.</p>
+<p>Just as the talk's title promised, Phil approached a subject that I've found tricky to "get" up to now from a C# perspective with some real world examples that I can relate to. I've bought a <a href="http://www.amazon.co.uk/F-For-Developers-Tao-Liu/dp/0735670269">book </a>and I'm determined to get up to speed.</p>
+<h2><strong>Cross-Platform Mobile Development in Visual Studio (Bart Read, @bart_read)<br />
+</strong></h2>
+<p>Anyone who opens a talk with the question "who likes beer?" has immediately got my attention, and my initial brief disappointment that this wasn't followed by the arrival of samples was soon overcome by a demonstration of the mobile app <a href="https://untappd.com/">Untappd</a>, a beer-discovery social networking application which is available in Windows Phone, Android, Apple iOS and Blackberry versions thanks to the open source cross mobile development tool <a href="http://phonegap.com/">PhoneGap</a>.</p>
+<p>Bart explained the different types of mobile application; native code, hybrid (calling custom native binaries which project the device's API into some other language like Javascript) and mobile web, with the relative pros and cons of each, before focusing on the development tools with Visual Studio support, RedGate's Nomad, Telerik's Icenium, both of which are hybrid solutions and Xamarin which takes a different approach of producing native code for each platform.</p>
+<p>Bart works for RedGate and so his talk soon focused on Nomad, but as both this and Icenium are based on PhoneGap (which just to be even more confusing has now been released as Apache Cordova), he explained that they are broadly compatible.</p>
+<p>Nomad comes in two or three parts depending on which version you go for; a Visual Studio Extension and access to the build service in the cloud (which lets you build iOS apps without a Mac but will also build for Android) comes in at around $25 a month, with a UI designer thrown in for an extra $10.</p>
+<p>The demo-gods must have been happy as his live demos; submitting a dummy CRM application from Visual Studio on his laptop to Nomad's cloud build service, before installing the built application from a DropBox folder on his Android tablet, went without a hitch. He then followed this up with a further demo integrating Azure mobile services for data storage.</p>
+<p>A slide on the future direction of Nomad; on device debugging, utilizing the Visual Studio debugger rather than Chrome Dev Tools, a (limited) free version of the cloud build service, Cordova plugin support and Windows 8 Phone support, wrapped up a very informative talk.</p>
+<h2><strong>You've got your Compiler in my Service (Matthew Steeples)<br />
+</strong></h2>
+<p>Matthew introduced Microsoft's <a href="http://msdn.microsoft.com/en-us/vstudio/roslyn.aspx">Roslyn</a>; their awesome new language object model which supports code generation, analysis and refactoring by opening up the Visual Basic and C# compilers as APIs.</p>
+<p>He demonstrated some of this awesomeness with the longest C# "Hello World" example I've ever seen, 78 lines of code! This used Roslyn to build up the source code in code; writing the Hello World application with SyntaxNodes, then programatically building, then running it. He explained how Roslyn can also parse existing code from strings, which is good for loading code dynamically e.g. you could store business logic code written in a database and load, build and apply this in your application at run-time.</p>
+<p>It also provides the ability to extend Visual Studio for code analysis, creating custom Refactoring and Code Issues. Sample templates are provided in the Sept 2012 CTP of Roslyn but both involve implementing a defined interface and then exporting the class using MEF for Visual Studio to pick it up. Debugging results in a new instance of Visual Studio being launched with the new functionality loaded as an extension.</p>
+<p>This is an incredibly powerful feature for devs and the possibilities for VS productivity improvements and dynamic code analysis in applications that this will allow is very exciting.</p>
+<p>The current CTP was launched back in September 2012, so a new release is due any time soon. With over 12 months of development, a lot might have changed so Matthew recommends holding out for the new version to anyone wanting to take a look at this.</p>
+<h2><strong>Tyrannosaurus Rx (John Stovin, @johnstovin)<br />
+</strong></h2>
+<p>I've been a regular user of Rx for some time now, mainly Throttle and Buffer due to the nature of the data that I deal with, but I must confess that it has been a bit of a "magic black box" for me. A colleague introduced it to me a while back (cheers Jarek) to help with some performance issues I was experiencing, it helped me out at the time but actually looking under the hood to see what it does has been on my todo list for ages.</p>
+<p>This was an Rx for beginners talk, so John started from the beginning. He explained how just as IEnumerable&lt;T&gt; and IEnumerator&lt;T&gt; allow you to work on sequences of "things", the inversion of that concept; IObservable&lt;T&gt; and IObserver&lt;T&gt;, allow you to publish sequences instead. I felt quite guilty as a holder of a Software Engineering degree that I had never come across <a href="http://rxwiki.wikidot.com/marble-diagrams">Marble Diagrams</a> before but they make some quite complicated Rx scenarios very easy to represent.</p>
+<p>From here he showed increasingly complicated scenarios working towards a UI example, with multiple mouse move and button events being combined to provide click and click and drag functionality, the sort of task which would lead to some serious spaghetti code with event handlers and local state without Rx.</p>
+<p>A great talk, which filled in a lot of gaps in my Rx knowledge.</p>
+<h2><strong>EventStore - an Introduction to DSD for Event Sourcing and Notifications (Liam Westley, @westleyl)<br />
+</strong></h2>
+<p>The demo gods finally struck! A last minute room change caused by a broken projector (which Liam blamed on a rogue "fruit based" laptop) followed by further shenanigans in the sourcing of a lectern power socket to eliminate a health and safety trip-hazard nightmare didn't phase Liam one bit as he launched into his "101" talk on <a href="http://geteventstore.com/">EventStore</a>, the open-source functional database.</p>
+<p>He covered some of the basic concepts of EventStore; how the data is Create and Read-Only, with no updates and deletes (to the initial unease of developers, only to realise that source control systems such as Git do this quite happily). This eliminates the complications which arise in traditional relational databases with performance and backup as the files are never locked, only incrementally added to. Data versioning is automatic, and reconciliation is handled by the user (EventStore will tell you if it already has the "new" version you are trying to add, so it's up to you what to do next). Traditional database indicies are replaced by JavaScript and run on the JavaScript v8 engine.</p>
+<p>He then ran though how to run a single node of EventStore, covering some of the common pitfalls that catch people out (not having sufficient security to host an http server for example) and then created a database containing the DDD North talks agenda and demonstrated how to query this from C# or through the web interface. He showed us projections, which are used to filter streams, can be administered through the web interface and can either create new copies of the events or link to the original events.</p>
+<p>A very informative talk on something which I have wanted to try for quite some time, I will certainly be having a look at EventStore in the near future.</p>
+<h2><strong>Overall</strong></h2>
+<p>This was my second DDD, first DDD North and I had a great time. The venue was very well laid out (first time I've sat in a lecture theater since university, which felt a bit strange), talks were extremely informative and I have come away with lots of new ideas and things I want to try.</p>
+<p>For those of you who have never heard of <a href="http://www.developerdeveloperdeveloper.com/home/">Developer! Developer! Developer!</a> they are a series of free developer community events that have been running since May 2005. They were started on the following five principles:</p>
+<ul>
+<li>For the community and by the community</li>
+<li>Free to attend</li>
+<li>Held on a Saturday or non-work day</li>
+<li>No Microsoft speakers (with some exceptions)</li>
+<li>Grow the local speaker community</li>
+</ul>
+<p>The session proposals are submitted and then voted for by the attendees to decide the agenda. They regularly attract hundreds of attendees and often sell out in minutes. If you're interested in any aspect of .Net development then you will definitely find something of interest so please check them out, I intend to visit as many as I can, so feel free to say Hi if you spot me.</p>
+<p>Thanks to the organisers for creating yet another awesome DDD! These free events can't happen without sponsorship, so thanks also go out to the following for their support:</p>
+<ul>
+<li><a href="http://www.sunderland.ac.uk/" target="_blank">Sunderland University</a> (@sunderlanduni)</li>
+<li><a href="http://www.sunderlandsoftwarecity.com/" target="_blank">Sunderland Software City</a> (@sunsoftcity)</li>
+<li><a href="http://www.makeitsunderland.com" target="_blank">MAKE it Sunderland</a> (@MAKEitSund)</li>
+<li><a href="http://www.blackmarble.co.uk/" target="_blank">Black Marble</a> (@BlackMarble)</li>
+<li><a href="http://www.sage.co.uk/" target="_blank">Sage UK</a> (@sageuk)</li>
+<li><a href="http://www.aspose.com/" target="_blank">Aspose</a> (@aspose)</li>
+<li><a href="http://www.syncfusion.com/" target="_blank">Syncfusion</a> (@syncfusion)</li>
+<li><a href="http://www.telerik.com/" target="_blank">Telerik</a> (@telerik)</li>
+<li><a href="http://www.tinamous.com/" target="_blank">Tinamous</a> (@tinamoussteve)</li>
+</ul>

@@ -1,0 +1,48 @@
+---
+layout: post
+title: How to fix the iTunes 10 compilation album grouping bug
+date: 2011-02-14 14:59:32.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- Apple
+- iTunes
+tags:
+- 10.1.2
+- annoyance
+- annoying
+- Apple
+- compilation
+- compilation album
+- error
+- fault
+- fix
+- grouping
+- iTunes
+- seperate listing bug
+- sort album artist
+meta:
+  _edit_last: '2'
+  _wp_old_slug: ''
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461308684;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:2412;}i:1;a:1:{s:2:"id";i:62;}i:2;a:1:{s:2:"id";i:1732;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>I've been encoding a lot of my CDs in iTunes (10.1.2) lately. It generally does a great job of encoding to Apple Lossless and grabbing the appropriate track data and cover art from the internet I've have come across an annoying problem. Occasionally, despite ALL of the tags being the same, and numerous combinations of "Compilation, Sort Album, etc..." being set, iTunes still insists on listing a compilation album as individual tracks like this:</p>
+<p><a href="http://www.dutton.me.uk/wp-content/uploads/2011/02/Screen-shot-2011-02-14-at-14.25.49.png"><img class="aligncenter size-medium wp-image-371" title="The problem with iTunes grouping" src="{{ site.baseurl }}/assets/Screen-shot-2011-02-14-at-14.25.49-300x177.png" alt="" width="300" height="177" /></a></p>
+<p>A google search of the problem shows that I'm not alone. There seems to be as many solutions as there are people posting so in case it's of any use, here's what has worked for me every time.<!--more--></p>
+<ol>
+<li>Select all of the tracks you wish to group, right-click, and from the context menu select "Get Info".</li>
+<li>On the "Info" tab, enter a single space in the "Album Artist" field.<a href="http://www.dutton.me.uk/wp-content/uploads/2011/02/Screen-shot-2011-02-14-at-14.40.01.png"><img class="aligncenter size-medium wp-image-373" title="Album Artist field" src="{{ site.baseurl }}/assets/Screen-shot-2011-02-14-at-14.40.01-300x253.png" alt="" width="300" height="253" /></a></li>
+<li>On the "Options" tab, set "Part of a compilation" to "Yes".<a href="http://www.dutton.me.uk/wp-content/uploads/2011/02/Screen-shot-2011-02-14-at-14.39.25.png"><img class="aligncenter size-medium wp-image-374" title="Part of a Compilation" src="{{ site.baseurl }}/assets/Screen-shot-2011-02-14-at-14.39.25-300x253.png" alt="" width="300" height="253" /></a></li>
+<li>Click "OK" to make those changes.</li>
+<li>The album should now be grouped properly, and you'll see something like this:<a href="http://www.dutton.me.uk/wp-content/uploads/2011/02/Screen-shot-2011-02-14-at-14.42.23.png"><img class="aligncenter size-medium wp-image-372" title="iTunes grouping but without &quot;Various Artists&quot;" src="{{ site.baseurl }}/assets/Screen-shot-2011-02-14-at-14.42.23-300x167.png" alt="" width="300" height="167" /></a></li>
+<li>The only problem is now iTunes thinks that the album's artist is " " and so isn't listing it as "Various Artists", so with the tracks selected, right-click and from the context menu select "Get Info" again.</li>
+<li>This time on the "Info" tab, remove the single space from the "Album Artist" field.</li>
+<li>Click "OK" to make that change and the album should now be grouped properly and listed as Various Artists.</li>
+</ol>

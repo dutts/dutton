@@ -1,0 +1,91 @@
+---
+layout: post
+title: Custom format string for a .Net 3.5 TimeSpan object
+date: 2013-09-26 13:10:21.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- .Net
+- C#
+- Software Development
+tags:
+- .NET
+- .net 3.5
+- c#
+- custom format string
+- custom formatting timespan
+- format string
+- programming
+- timespan
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _wpas_skip_2785187: '1'
+  _wpas_skip_3579159: '1'
+  _wpas_skip_2785197: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461296987;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:1002;}i:1;a:1:{s:2:"id";i:1732;}i:2;a:1:{s:2:"id";i:181;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>Hmm, turns out TimeSpan only supports custom ToString formatting from .Net 4 onwards....</p>
+<p>So here's a noddy extension method. Supports h for hours, m for minutes, s for seconds (along with hh for zero padding, and so on) and passes any other characters through to the output. It's all I needed but could be easily extended.</p>
+<pre name="code" class="c-sharp">        /// &lt;summary&gt;
+        /// Returns the TimeSpan object as a string using the provided format string.
+        /// Currently supports:
+        /// h  - Hours
+        /// m  - Minutes
+        /// s  - Seconds
+        /// hh - Zero padded hours
+        /// mm - Zero padded minutes
+        /// ss - Zero padded seconds
+        /// &lt;/summary&gt;
+        ///&lt;param name="ts"&gt;The TimeSpan object&lt;/param&gt;
+        ///&lt;param name="formatString"&gt;The format string&lt;/param&gt;
+        ///&lt;returns&gt;Formatted string representation of the TimeSpan&lt;/returns&gt;
+        public static string ToString(this TimeSpan ts, string formatString)
+        {
+            var sb = new StringBuilder();
+
+            for (var i = 0; i &lt; formatString.Length; i++)
+            {
+                switch (formatString[i])
+                {
+                    case 'h':
+                        if (i &lt; formatString.Length - 1 &amp;&amp; formatString[i + 1] == 'h')
+                        {
+                            if (ts.Hours &lt; 10) sb.AppendFormat("0{0}", ts.Hours);
+                            else sb.Append(ts.Hours);
+                            i++;
+                        }
+                        else sb.Append(ts.Hours);
+                        break;
+                    case 'm':
+                        if (i &lt; formatString.Length - 1 &amp;&amp; formatString[i + 1] == 'm')
+                        {
+                            if (ts.Minutes &lt; 10) sb.AppendFormat("0{0}", ts.Minutes);
+                            else sb.Append(ts.Minutes);
+                            i++;
+                        }
+                        else sb.Append(ts.Minutes);
+                        break;
+                    case 's':
+                        if (i &lt; formatString.Length - 1 &amp;&amp; formatString[i + 1] == 's')
+                        {
+                            if (ts.Seconds &lt; 10) sb.AppendFormat("0{0}", ts.Seconds);
+                            else sb.Append(ts.Seconds);
+                            i++;
+                        }
+                        else sb.Append(ts.Seconds);
+                        break;
+                    default: // Pass through any non recognised characters
+                        sb.Append(formatString[i]);
+                        break;
+                }
+            }
+            return sb.ToString();
+        }</pre>

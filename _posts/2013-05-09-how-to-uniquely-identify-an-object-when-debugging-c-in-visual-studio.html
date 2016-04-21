@@ -1,0 +1,43 @@
+---
+layout: post
+title: How to uniquely identify an object when debugging C# in Visual Studio
+date: 2013-05-09 23:13:39.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- C#
+- Software Development
+- Visual Studio 2010
+- Visual Studio 2012
+tags:
+- .NET
+- c#
+- debugger
+- make object id
+- Microsoft Visual Studio 2008
+- Microsoft Visual Studio 2010
+- MSVS2008
+- MSVS2010
+- programming
+- uniquely identifying objects
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461266913;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:510;}i:1;a:1:{s:2:"id";i:3782;}i:2;a:1:{s:2:"id";i:5342;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>Many years ago I used to develop applications in C++ under Visual Studio and despite thoroughly loving the move to managed code, in particular C# .Net I do find that I occasionally miss some of the ways I used to be able to debug old non-managed programming languages.</p>
+<p>One thing in particular I miss when trying to fix a frustratingly elusive bug (normally involving threads or some other equally non-determinstic nightmare ;) ) is the ability to see the memory address of a particular object instance on the heap under the debugger and compare that to an instance where it appears elsewhere in my execution to be <strong>sure</strong> that they are the same.</p>
+<p>Up to now I have just written that off as one of those managed code limitations and worked around it. That was until a colleague (cheers Dan) pointed out something that's been under my nose this whole time, this:</p>
+<p style="text-align: center;"><img class="size-full wp-image-2022 aligncenter" alt="Make Object ID" src="{{ site.baseurl }}/assets/Screen-Shot-2013-07-11-at-22.01.53.png" width="372" height="268" /></p>
+<p>In the Locals or Watch windows when debugging, you can right-click on any reference type and "Make Object ID" which will append a number (followed by a '#' surrounded by curly braces) to the end of the value like this:</p>
+<p style="text-align: center;"><img class="size-full wp-image-2032 aligncenter" alt="Object ID" src="{{ site.baseurl }}/assets/Screen-Shot-2013-07-11-at-22.02.17.png" width="332" height="96" /></p>
+<p>This will uniquely identify the object until you either right-click again and select "Delete Object ID" or stop debugging.</p>
+<p>And here's its <a href="http://msdn.microsoft.com/en-gb/library/Vstudio/ms164903.aspx" target="_blank">MSDN description (under Managed Object Identity)</a>.</p>
+<p>I swear I really should RTFM when it comes to Visual Studio. I hoped that this was something new in VS2012 but I fired up an old VS2010 project and there it is again! It's been under my nose this whole time!</p>

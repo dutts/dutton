@@ -1,0 +1,49 @@
+---
+layout: post
+title: Creating Excel .xls spreadsheets with PHP
+date: 2009-03-02 12:52:25.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- PHP
+- Software Development
+tags:
+- Microsoft Excel
+- PHP
+- programming
+- spreadsheet
+- spreadsheet generation
+- xls
+meta:
+  _edit_last: '2'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461301597;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:276;}i:1;a:1:{s:2:"id";i:405;}i:2;a:1:{s:2:"id";i:2112;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>A web-based statistics system I'm developing for a client needs the facility to dynamically generate Excel spreadsheets. The system runs on a Linux platform with a typical Apache, MySQL and PHP install and is hosted on a virtual server at a commercial hosting company so access to anything Microsoft or COM-like wasn't an option and I only had a basic PHP install available. Most web searches come up with solutions that rely on PEAR (such as the Spreadsheet_Excel_Writer module) but my hosts' PHP didn't support PEAR and they wouldn't let me install it.</p>
+<p>Finally I came across Johann Hanne's port of the Perl Spreadsheet::WriteExcel module on <a href="http://www.bettina-attack.de/jonny/view.php/projects/php_writeexcel/" target="_blank">his website</a> and it's working brilliantly without any additional dependencies! Although his documentation is a little thin on the ground, he does provide some example scripts to get you going and as it's a direct port, you can still refer to the original Perl documentation.</p>
+<p>Creating a simple spreadsheet in PHP is as simple as importing the writeexcel classes and setting up a new workbook and worksheet:</p>
+<pre class="php">require_once "class.writeexcel_workbook.inc.php";
+require_once "class.writeexcel_worksheet.inc.php";
+
+$fname = tempnam("/tmp", "simple.xls");
+$workbook = &amp;new writeexcel_workbook($fname);
+$worksheet = &amp;$workbook-&gt;addworksheet();</pre>
+<p>...then use the write($row, $column, $token) function to put values into cells:</p>
+<pre class="php"># Write some text
+$worksheet-&gt;write(0, 0,  "Hi Excel!");
+# Write some numbers
+$worksheet-&gt;write(1, 0,  3);</pre>
+<p>...and tidy up and return it, in this example through the browser, but you could always copy the file from the /tmp folder to somewhere more permanent and do what you want with it:</p>
+<pre class="php">$workbook-&gt;close();
+header("Content-Type: application/x-msexcel; name="example.xls"");
+header("Content-Disposition: inline; filename="example.xls"");
+$fh=fopen($fname, "rb");
+fpassthru($fh);
+unlink($fname);</pre>
+<p>...and there you go, automatically generated Excel spreadsheets through PHP.</p>

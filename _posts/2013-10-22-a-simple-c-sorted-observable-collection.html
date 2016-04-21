@@ -1,0 +1,63 @@
+---
+layout: post
+title: A Simple C# Sorted Observable Collection
+date: 2013-10-22 18:00:57.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- C#
+- Software Development
+tags:
+- .NET
+- c#
+- observable
+- ObservableCollection
+- ordered
+- ordering
+- programming
+- sorted
+- sorted observable collection
+- sorted observablecollection
+- sortedobservablecollection
+- sorting
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461317240;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:1942;}i:1;a:1:{s:2:"id";i:3402;}i:2;a:1:{s:2:"id";i:1852;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>I know that this can be done with ICollectionView without modifying the underlying order, but for times when I really must have my bound collection sorted, I use this:</p>
+<pre name="code" class="c-sharp">    /// &lt;summary&gt;
+    /// A Sorted ObservableCollection.
+    /// - Sorts on Insert.
+    /// - Requires that T implements IComparable.
+    /// &lt;/summary&gt;
+    /// &lt;typeparam name="T"&gt;The type held within collection&lt;/typeparam&gt;
+    public class SortedObservableCollection&lt;T&gt; : ObservableCollection&lt;T&gt;
+        where T : IComparable
+    {
+        protected override void InsertItem(int index, T item)
+        {
+            for (var i = 0; i < Count; i++)
+            {
+                switch (Math.Sign(this[i].CompareTo(item)))
+                {
+                    case 0:
+                    case 1:
+                        base.InsertItem(i, item);
+                        return;
+                    case -1:
+                        break;
+
+                }
+            }
+            base.InsertItem(Count, item);
+        }
+    }</pre>
+<p>It sorts on insert and is O(n) so be careful with large collections.</p>

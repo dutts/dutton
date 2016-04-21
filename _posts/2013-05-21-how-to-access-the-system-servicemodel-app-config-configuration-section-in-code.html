@@ -1,0 +1,75 @@
+---
+layout: post
+title: How to access the System.ServiceModel app.config configuration section in code
+date: 2013-05-21 12:48:18.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- .Net
+- C#
+- Software Development
+tags:
+- .NET
+- access in code
+- app.config
+- c#
+- client
+- code behind
+- configurationmanager
+- endpoint
+- getsectiongroup
+- in code
+- programming
+- servicemodel
+- servicemodelsectiongroup
+- wcf
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _wpas_skip_2785187: '1'
+  _wpas_skip_3579159: '1'
+  _wpas_skip_2785197: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461292546;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:1002;}i:1;a:1:{s:2:"id";i:518;}i:2;a:1:{s:2:"id";i:3782;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>The app I'm currently working on is a graphical client which connects to a server for its data. This connection is made using WCF and configured within my app.config file like this:</p>
+<pre name="code" class="xml">
+<client>
+  <endpoint name="MyServer" contract="Server.IMyServer" binding="netTcpBinding" bindingconfiguration="MyServerTcpBinding" address="net.tcp://localhost:8081/MyServer">
+    <identity>
+      <dns value="localhost" />
+    </identity>
+  </endpoint>
+</client>
+</pre>
+<p>I now need to allow the client to connect to different servers at the request of the user, so I can add these to my app.config as additional endpoint elements, like this:</p>
+<pre name="code" class="xml">
+<client>
+  <endpoint name="MyServer1" contract="Server.IMyServer" binding="netTcpBinding" bindingconfiguration="MyServerTcpBinding" address="net.tcp://localhost:8081/MyServer">
+    <identity>
+      <dns value="localhost" />
+    </identity>
+  </endpoint>
+  <endpoint name="MyServer2" contract="Server.IMyServer" binding="netTcpBinding" bindingconfiguration="MyServerTcpBinding" address="net.tcp://10.0.0.10:8081/MyServer">
+    <identity>
+      <dns value="localhost" />
+    </identity>
+  </endpoint>
+</client>
+</pre>
+<p>The problem is, how can I access these configuration elements in code to populate a pull-down or something to let the user pick? The usual ConfigurationManager I'd use to access stuff from my app.config doesn't provide any of the ServiceModel elements so instead I had to first get the Configuration object for the application using ConfigurationManager then get to the service model section using ServiceModelSectionGroup's GetSectionGroup method, like this:</p>
+<pre name="code" class="c-sharp">
+var appConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+var serviceModel = ServiceModelSectionGroup.GetSectionGroup(appConfig);
+var clientEndpoints = serviceModel.Client.Endpoints;
+foreach (ChannelEndpointElement endpoint in clientEndpoints)
+{
+  Debug.WriteLine(endpoint.Address);
+}
+</pre>

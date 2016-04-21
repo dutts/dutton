@@ -1,0 +1,44 @@
+---
+layout: post
+title: 'Code Snippet: A recursive WPF Visual Tree child search'
+date: 2013-06-20 18:30:42.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- .Net
+- C#
+- Software Development
+- WPF
+tags:
+- .NET
+- c#
+- child
+- children
+- navigate visual tree
+- programming
+- search
+- visual tree
+- visualtreehelper
+- WPF
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461278010;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:1942;}i:1;a:1:{s:2:"id";i:323;}i:2;a:1:{s:2:"id";i:2172;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>For when you want to find a child of a given type anywhere below a root element in the visual tree. I always end up writing these, so though I might as well post it for reference / review. Another candidate for a shared library.</p>
+<pre name="code" class="c-sharp">
+private static DependencyObject RecursiveVisualChildFinder&lt;T&gt;(DependencyObject rootObject)
+{
+    var child = VisualTreeHelper.GetChild(rootObject, 0);
+    if (child == null) return null;
+
+    return child.GetType() == typeof (T) ? child : RecursiveVisualChildFinder&lt;T&gt;(child);
+}
+</pre>

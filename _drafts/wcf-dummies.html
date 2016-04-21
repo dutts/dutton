@@ -1,0 +1,34 @@
+---
+layout: post
+title: WCF Dummies
+date: 
+type: post
+published: false
+status: draft
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  _publicize_facebook_user: https://www.facebook.com/dutts303
+  _publicize_twitter_user: '@dutts303'
+  _oembed_a90bf4a7b8ddc755c2ca4388b0af40ac: '{{unknown}}'
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>http://weblogs.asp.net/ralfw/a-truely-simple-example-to-get-started-with-wcf</p>
+<p><system.servicemodel></p>
+<p>  <bindings><br />
+    <basichttpbinding><br />
+      <binding name="http" maxreceivedmessagesize="2097152" /><br />
+    </basichttpbinding><br />
+  </bindings></p>
+<p>  <client><br />
+    <endpoint name="FooService" contract="Full.Name.IMyService" address="http://192.168.0.1:1234/MyService" binding="basicHttpBinding" bindingconfiguration="http" /><br />
+  </client></p>
+<p></system.servicemodel></p>
+<p>var chatServiceFactory = new ChannelFactory<imyservice>("FooService");<br />
+</imyservice></p>

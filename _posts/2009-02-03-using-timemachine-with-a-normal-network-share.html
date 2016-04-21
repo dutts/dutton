@@ -1,0 +1,49 @@
+---
+layout: post
+title: Using Time Machine with a normal network share
+date: 2009-02-03 11:49:05.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- OS X
+tags:
+- Backup
+- Leopard
+- NAS
+- Network share
+- OS X
+- Time Machine
+meta:
+  _edit_last: '2'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1453571735;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:173;}i:1;a:1:{s:2:"id";i:62;}i:2;a:1:{s:2:"id";i:91;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>It's no great secret that OS X supports Apple's shiny (and slightly overpriced, IMHO) Time Capsule straight out of the box as a backup volume for Time Machine, but trying to get it working with a normal network share takes a bit more fiddling, even with Leopard (10.5.6). After finding a few slightly conflicting "how-to"s on various blogs here's what I did to get it working with my D-Link DNS-323 NAS.</p>
+<ol>
+<li>First, configure Time Machine to use "unsupported" network shares by typing the following into a console window:<br />
+<strong>defaults write com.apple.systempreferences TMShowUnsupportedNetworkVolumes 1</strong></li>
+<li>Now, under normal circumstances you'd expect this to just work, as long as you have mounted the network share you wish to use as a backup destination, it should now appear in the "Change Disk..." listing in Time Machine Preferences, but try to run with this and it will sit "Preparing" for a bit then fail with a “The Backup Disk Image could not be mounted.” error message.</li>
+<li>Start Time Machine off again trying to backup but this time watch your network share.</li>
+<li>You will see that a file is created in the following structure:<br />
+<strong>ComputerName_MACAddress.tmp.sparcebundle</strong>, copy this filename. Once the backup attempt fails, this file will disappear so try again if you don't manage to catch it. It appears that Time Machine has a problem creating this file and so the whole thing bombs out. So, let's give it a helping hand and create one for it!</li>
+<li>Open Disk Utility on your Mac. Click “New Image" and use the following settings, in the following order:
+<ol>
+<li>Save as <strong>ComputerName_MACAddress </strong>(that you copied above, minus the "tmp" part)</li>
+<li>Set whatever you want as the Volume Name.</li>
+<li>Skip over Volume Size for the moment.</li>
+<li>Change Partition to "No Partition Map".</li>
+<li>Change Image Format to “Sparce Bundle Disk Image”.</li>
+<li>Now set the Volume Size, select "Custom Volume Size" and set it to the maximum size you want to use for your backup volume. Don't worry if you don't have the hdd space as this is a maximum size only, it won't immediately create an image file that size. For example I created one set to 900gb which resulted in an image file around 200mb initially.</li>
+<li>Create the image.</li>
+</ol>
+</li>
+<li>Now copy this image file to your original backup destination network share.</li>
+<li>Start Time Machine off again, and this time it shouldn't fail.</li>
+</ol>
+<p>As I type I've now got both my MacBook and Mac Mini backing up to a single network share on my DNS323 "toaster" NAS, I'll report any problems.</p>

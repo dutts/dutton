@@ -1,0 +1,41 @@
+---
+layout: post
+title: Merging Folder Contents in OS X
+date: 2009-02-17 08:27:32.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- Apple
+- OS X
+- Photography
+tags:
+- directory merge
+- file copy
+- FileMerge
+- Leopard
+- OS X
+- Photography
+meta:
+  _edit_last: '2'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1457450992;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:62;}i:1;a:1:{s:2:"id";i:173;}i:2;a:1:{s:2:"id";i:1732;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>Although I've been an Apple convert and dedicated OS X user at home for a reasonable amount of time, I still get caught out occasionally by making assumptions with my "Windows" brain, and the one that has recently cropped up and bitten me in the arse is Finder's folder copy function.</p>
+<p>I have two Canon cameras; a dSLR 40D and a compact IXUS85, both of which I used to take pictures of our recent snow and both of which it turns out store their photos in a folder called "100CANON" on their respective memory cards.</p>
+<p>I didn't really think anything of it when I plugged both cards in my USB reader, the first folder copied to the desktop fine. Then when I went to copy the second, I got the following dialog:</p>
+<p style="text-align: center;"><img class="size-full wp-image-98 aligncenter" title="OS X Folder Replace Dialog " src="{{ site.baseurl }}/assets/picture-11.png" alt="OS X Folder Replace Dialog " width="479" height="188" /></p>
+<p>Being used to various Windows platforms in the past and at work, I just clicked 'OK', assuming that I'd end up with a single folder on my desktop containing both sets of files. I knew there wouldn't be any filename conflicts as my 40D produces .CR2 raw files and my IXUS85 .jpgs, but once the operation had completed, I opened the folder and found no sign of my .CR2s! The copy had in fact done exactly what the dialog said; it had replaced the old folder with the new one! The original CANON100 folder containing my CR2s had gone completely, no Trash bin, no nothing!</p>
+<p>After some furious web searching, this actually turns out to be quite a contentious issue in Mac-land and has in fact been a 'feature' of OS X's Finder all along. The web is full of horror stories of people losing gigs of carefully organised mp3s, photos, whatever, when they decided to copy an indentically named folder from their usb key, expecting the contents to merge with their existing collection.  Due to the fact that OS X treats all files and folders as objects, this behaviour makes sense, it's just not what I initially expected.</p>
+<p>Luckily, Apple do provide an application to merge folders called FileMerge as this MacWorld tip from 2006 points out. To use it you'll need to install Xcode, and it is intended to be used for comparing files, but as the article points out, it can also be used to compare folders and will happily point out any discrepancies between the contents of the two and allow you to merge them.</p>
+<p>So I guess the lessons I learnt from this are;</p>
+<ul>
+<li>Never 'Move', always 'Copy' and check my files are where I want them before deleting the originals, and</li>
+<li>Use FileMerge to merge the contents of directories.</li>
+</ul>
+<p>Fortunately, I didn't lose too much, the flurry of snow balls flying about at the time meant I was quite reluctant to bring my 40D out from under my coat!</p>

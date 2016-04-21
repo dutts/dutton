@@ -1,0 +1,131 @@
+---
+layout: post
+title: Do I use a 'switch' or sequential 'if's? A shallow dive into their CIL
+date: 2016-01-15 22:03:27.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- C#
+- Software Development
+tags:
+- .NET
+- c#
+- CIL
+- efficiency
+- if
+- IL
+- performance
+- programming
+- switch
+meta:
+  _edit_last: '2'
+  _publicize_facebook_user: https://www.facebook.com/dutts303
+  _publicize_twitter_user: '@dutts303'
+  _wpcom_is_markdown: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461272390;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:4312;}i:1;a:1:{s:2:"id";i:109;}i:2;a:1:{s:2:"id";i:518;}}}}
+  _wpas_done_all: '1'
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>I recently found myself needing to convert a calculation on ints to use double values. One of the functions within this calculation was a switch statement and as switch only supports <a href="https://msdn.microsoft.com/en-us/library/exx3b86w.aspx" target="_blank">integral </a>types, this needed more than just a type change.</p>
+<p>I was fortunate in that this particular double value was always at most one decimal place which left me with two possible options; either replace the switch with a bunch of sequential if statements or multiply the double by 10, cast it to an int and switch on the resulting int.</p>
+<p>Ignoring the debate over whether the cast is a bit too hacky, it got me thinking; what is the difference in compiled output (<a href="https://en.wikipedia.org/wiki/Common_Intermediate_Language" target="_blank">CIL</a>) between switch and sequential ifs covering the same test cases? Given that the cases of a switch are compile time constants and together as a block, does the compiler make any attempt to optimise the comparison or does it just grind through all the cases linearly until a match is found (making it essentially syntactic sugar for sequential ifs).</p>
+<p>Out came a test project and <a href="http://ilspy.net/" target="_blank">ILSpy </a>and this is what I found.</p>
+<p>Here's the test code and corresponding annotated CIL (Release build, .Net 4.5):</p>
+<pre class="c-sharp" name="code">public static int SwitchTest(int x) 
+{ 
+    switch (x) 
+    { 
+        case 10: return 1; 
+        case 20: return 2; 
+        case 30: return 3; 
+    }
+    return -1; 
+}
+
+public static int IfTest(int x)
+{
+    if (x == 10) return 1;
+    if (x == 20) return 2;
+    if (x == 30) return 3;
+    return -1;
+}
+</pre>
+<pre class="c-sharp" name="code">.method public hidebysig static 
+    int32 SwitchTest (
+        int32 x
+    ) cil managed 
+{
+    // Method begins at RVA 0x2062
+    // Code size 25 (0x19)
+    .maxstack 8
+
+    IL_0000: ldarg.0.       // load the argument onto the stack
+    IL_0001: ldc.i4.s 10.   // push 10 onto the stack
+    IL_0003: beq.s IL_0011  // if both are equal go to IL_0011
+
+    IL_0005: ldarg.0        // repeat above for 20 and 30
+    IL_0006: ldc.i4.s 20.   
+    IL_0008: beq.s IL_0013
+
+    IL_000a: ldarg.0
+    IL_000b: ldc.i4.s 30
+    IL_000d: beq.s IL_0015
+
+    IL_000f: br.s IL_0017  
+
+    IL_0011: ldc.i4.1.     // push 1 onto the stack
+    IL_0012: ret.          // return
+
+    IL_0013: ldc.i4.2      // repeat above for 2 and 3
+    IL_0014: ret
+
+    IL_0015: ldc.i4.3
+    IL_0016: ret
+
+    IL_0017: ldc.i4.m1.    // push -1 onto the stack
+    IL_0018: ret.          // return
+} // end of method Program::SwitchTest
+
+.method public hidebysig static 
+    int32 IfTest (
+        int32 x
+    ) cil managed 
+{
+    // Method begins at RVA 0x207c
+    // Code size 23 (0x17)
+    .maxstack 8
+
+    IL_0000: ldarg.0           // load the argument onto the stack
+    IL_0001: ldc.i4.s 10       // push 10 onto the stack
+    IL_0003: bne.un.s IL_0007. // if both are NOT equal go to IL_0007
+
+    IL_0005: ldc.i4.1.         // push 1 onto the stack
+    IL_0006: ret               // return
+
+    IL_0007: ldarg.0           // repeat above for 20, 30
+    IL_0008: ldc.i4.s 20
+    IL_000a: bne.un.s IL_000e
+
+    IL_000c: ldc.i4.2
+    IL_000d: ret
+
+    IL_000e: ldarg.0
+    IL_000f: ldc.i4.s 30
+    IL_0011: bne.un.s IL_0015
+
+    IL_0013: ldc.i4.3
+    IL_0014: ret
+
+    IL_0015: ldc.i4.m1.       // push -1 onto the stack
+    IL_0016: ret.             // return
+} // end of method Program::IfTest
+</pre>
+<p>Although only a single example for my very simple use case, the only significant difference between the two compiled outputs is that the switch example uses <a href="https://msdn.microsoft.com/library/system.reflection.emit.opcodes.beq_s.aspx" target="_blank">beq.s</a> positive comparison (equals) and the if example uses <a href="https://msdn.microsoft.com/library/system.reflection.emit.opcodes.bne_un_s.aspx" target="_blank">bne.un.s</a> negative comparison (not equals) to achieve the same result. Because of this, in the scenario where no match is made the switch example involves executing one more instruction.</p>
+<p>Will the extra instruction be make or break for the performance of your application? Certainly not, but contrary to the spirit of endless abstraction I find it grounding to occasionally head in the opposite direction and see what even the most basic of language constructs represent under the hood.</p>
+<p>As far as I can see in this case the only real argument is that of code legibility. Now I know...</p>

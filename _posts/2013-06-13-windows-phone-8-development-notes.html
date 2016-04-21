@@ -1,0 +1,49 @@
+---
+layout: post
+title: Windows Phone 8 Development Notes
+date: 2013-06-13 20:26:54.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- C#
+- Silverlight
+- Software Development
+- Windows 8 Phone
+tags:
+- .NET
+- c#
+- imultibindingconverter support
+- programming
+- style triggers support
+- textblock unit qualifier
+- visualstates
+- windows 8 phone
+- windows phone
+- winrt
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _jetpack_related_posts_cache: a:0:{}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>As a WPF developer, I'm finding the jump to Windows Phone 8 development not as seamless as I had first hoped, here are some of the small differences that have bitten me so far (certainly more to come, I'll be adding to this list and have a few blog posts on the way with some more detail)</p>
+<p><strong>TextBlock</strong></p>
+<ul>
+<li>Windows Phone OS doesn't support setting a unit qualifier on the FontSize property and will throw an Exception at run-time if you try (<a href="http://msdn.microsoft.com/en-us/library/system.windows.controls.textblock.fontsize%28v=vs.110%29.aspx" target="_blank">WPF</a> vs <a href="http://msdn.microsoft.com/en-us/library/windowsphone/develop/system.windows.controls.textblock.fontsize%28v=vs.105%29.aspx" target="_blank">Phone</a>).</li>
+<p>
+</ul>
+<p><strong>MultiBindingConverter</strong></p>
+<ul>
+<li>Windows Phone doesn't support IMultiBindingConverter, I'll be blogging about a workaround soon.</li>
+<p>
+</ul>
+<p><strong>Style Triggers</strong></p>
+<ul>
+<li>There are no style triggers in Windows Phone OS, I wanted to change the appearance of a ListBoxItem based on its IsSelected property and had to resort to using VisualStates instead, more to follow.</li>
+</ul>

@@ -1,0 +1,90 @@
+---
+layout: post
+title: Using your own Fasthosts domain with Windows Azure Web Sites
+date: 2013-08-04 08:00:35.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- Azure
+- Microsoft
+tags:
+- a record
+- azure
+- azure management dashboard
+- azureverify
+- cloud
+- cloud host
+- cloud hosting
+- cname
+- cname for azure
+- custom domain
+- custom domain with azure
+- dns
+- dns for azure
+- fasthosts
+- fasthosts domain management
+- microsoft
+- tutorial
+- web hosting
+- web site
+- windows azure
+- windows azure web sites
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _wpas_skip_2785187: '1'
+  _wpas_skip_3579159: '1'
+  _wpas_skip_2785197: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461283403;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:4202;}i:1;a:1:{s:2:"id";i:3782;}i:2;a:1:{s:2:"id";i:2112;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>I've now successfully moved two of my domains to Azure web hosting, I can't say it was a particularly quick process but it is relatively painless. The key is not to lose patience with the DNS updates as it can appear like nothing is working (all while your website is broken to the outside world) so I thought I'd document the moving of a third domain so you know what to expect. I use Fasthosts for all of my hosting needs, so my screenshots are from their domain management system, but I can't see why the same wouldn't work for other domain name providers that allow custom DNS.</p>
+<p><strong>Setting up the Windows Azure web site</strong></p>
+<p>OK, so first we need to set up an Azure web site for you to point your domain to, you can skip this if you've already got one.</p>
+<ul>
+<li>Head over to https://manage.windowsazure.com/ and login to your Azure Dashboard.</li>
+<li>Select the <em>Web Sites</em> option on the left hand bar, and if you haven't already got any websites set up you'll see something that looks like this.<img class="aligncenter size-full wp-image-2452" alt="Azure Dashboard - No web sites" src="{{ site.baseurl }}/assets/Screen-Shot-2013-08-03-at-13.50.45.png" width="836" height="164" /></li>
+<li>Select <i>Create a Website</i> (or click the big plus icon at the bottom of the page if you already have websites set up) and you'll see this.<img class="aligncenter size-full wp-image-2472" alt="Azure Dashboard - New web site" src="{{ site.baseurl }}/assets/Screen-Shot-2013-08-03-at-13.52.43.png" width="948" height="503" /></li>
+<li>From here you can create all sorts of websites from the gallery or a simple website via the <em>Quick Create </em>link. For the purposes of this tutorial, I'm going to use <em>Quick Create</em> to get something that I can use to test my domain forwarding is working. So choose a name (this will be your azurewebsites.net domain and so needs to be unique, the green tick will indicate when you've picked one that Microsoft is happy with, but don't get too hung up on it as no-one will see it. We're going to set up your own domain to forward to this later.</li>
+<li>Click <em>Create Website</em> and you'll be taken back to the dashboard with your new website listed.</li>
+<li>The <em>Status</em> column will show "Creating" for a while (mine took about 20 seconds at 1400BST on a Saturday) and then will look like this. <img class="aligncenter size-full wp-image-2482" alt="Azure Dashboard - New web site created" src="{{ site.baseurl }}/assets/Screen-Shot-2013-08-03-at-13.53.34.png" width="944" height="186" /></li>
+<li>Now, if I go to my new domain (rdutton.azurewebsites.net), I'll be greeted by this to confirm that my Azure Website is up and running.<img class="aligncenter size-full wp-image-2492" alt="Azure web site new site default page" src="{{ site.baseurl }}/assets/Screen-Shot-2013-08-03-at-13.55.14.png" width="1102" height="864" /></li>
+</ul>
+<p><strong>Configuring my own domain to use with Windows Azure websites</strong></p>
+<ul>
+<li>My domain 'rdutton.co.uk', is hosted over at Fasthosts, but I want to use it for my azure website. At the time of writing, Windows Azure doesn't support hosting domains so we need to do some poking about in my DNS records over in my Fasthosts Control Panel.</li>
+<li>Go to https://www.fasthosts.co.uk/login/ and log into your control panel. If you've been following along from above, leave the Azure Dashboard open, you'll be needing that again soon.</li>
+<li>From the <em>Domain </em> tab, select <em>Manage Domains. <img class="aligncenter size-full wp-image-2502" alt="Fasthosts Dashboard - Manage Domains" src="{{ site.baseurl }}/assets/Screen-Shot-2013-08-03-at-14.16.15.png" width="633" height="309" /></em></li>
+<li>And click on the <em>DNS </em>icon for the domain you want to change. <img class="aligncenter size-full wp-image-2512" alt="Fasthosts Dashboard - DNS Domain Icon" src="{{ site.baseurl }}/assets/Screen-Shot-2013-08-03-at-14.17.08.png" width="766" height="100" /></li>
+<li>From here you'll be taken to the <em>Advanced DNS</em> window, in this screenshot my domain is currently just set to the default Fasthosts settings. <img class="aligncenter size-full wp-image-2522" alt="Fasthosts Dashboard - Advanced DNS Window" src="{{ site.baseurl }}/assets/Screen-Shot-2013-08-03-at-14.18.00.png" width="985" height="1177" /></li>
+<li>Go through and click <em>Remove</em> on all of the <em>A Records </em>and <em>CNAME Records</em> listed.</li>
+<li>Keeping the Fasthosts page open, go back to the Azure dashboard and from the <em>Web Sites</em> list, click on the name of the website you want to edit.</li>
+<li>Before you can use your own domain in Windows Azure, you need to change the scaling mode of your Azure website.</li>
+</ul>
+<p><strong>NB: This will change the <em>Web Site Mode</em> from <em>Free</em> so you will be charged for usage once you do this. Please consult the Azure price lists for more information.</strong></p>
+<ul>
+<li>Select the <em>Scale</em> tab. <img class="aligncenter size-full wp-image-2542" alt="Azure Dashboard - Scale Options" src="{{ site.baseurl }}/assets/Screen-Shot-2013-08-03-at-14.24.39.png" width="711" height="369" /></li>
+<li>Change the <em>Web Site Mode</em> to <em>Shared. <img class="aligncenter size-full wp-image-2552" alt="Azure Dashboard - Shared Web Site Mode" src="{{ site.baseurl }}/assets/Screen-Shot-2013-08-03-at-14.25.10.png" width="692" height="122" /></em></li>
+<li>Click <em>Save</em> and (you will be prompted with a warning about charging, confirm you are happy with this).</li>
+<li>Select the <em>Configure</em> tab and scroll down to <em>Domain Names</em>.</li>
+<li>Click on <em>Manage domains. </em><img class="aligncenter size-full wp-image-2562" alt="Azure Dashboard - Manage Domains" src="{{ site.baseurl }}/assets/Screen-Shot-2013-08-03-at-14.26.47.png" width="711" height="187" /></li>
+<li>This is where you will eventually configure the domain you want to point to your azure website but before you can do that, you need to configure some DNS! <img class="aligncenter size-full wp-image-2572" alt="Azure Dashboard - Manage Custom Domains" src="{{ site.baseurl }}/assets/Screen-Shot-2013-08-03-at-14.27.20.png" width="654" height="531" /></li>
+<li>Take a note of the IP address given on this window, in my case "137.135.129.175".</li>
+<li>On the Fasthosts dashboard for your domain, select <em>Add CNAME Record</em> and add and entry with a <em>Host Name</em> of "awverify.www" that points to "awverify.&lt;your azurename&gt;.azurewebsites.net". Click <em>Save</em>.</li>
+<li>Select <em>Add CNAME Record</em> again and add a further entry with a <em>Host Name</em> of "awverify" that points to "awverify.&lt;your azurename&gt;.azurewebsites.net" again, click <em>Save.</em></li>
+<li>You should then end up with CNAME records that look like this, but with your azure website address:<img class="aligncenter size-full wp-image-2602" alt="Fasthosts Dashboard - CNAME entries" src="{{ site.baseurl }}/assets/Screen-Shot-2013-08-03-at-14.36.16.png" width="762" height="178" /></li>
+<li>Select <em>Add A Record</em> and add an entry with a blank <em>Host Name</em> that points to your Azure Web Site IP address, click <em>Save.</em></li>
+<li>Add a further A Record with a <em>Host Name</em> of "www" pointing to the same IP, again click <em>Save.</em></li>
+<li>You should have A Records that look like this, but again with your Azure IP: <img class="aligncenter size-full wp-image-2682" alt="Fasthosts Dashboard - A NAME Records" src="{{ site.baseurl }}/assets/Screen-Shot-2013-08-03-at-20.09.00.png" width="760" height="190" /></li>
+<li>Now back at your Azure dashboard, enter your domain into the <em>Manage custom domains</em> <em></em>window. If you're lucky you will get a green tick after a few seconds. <img class="aligncenter size-full wp-image-2642" alt="Azure Dashboard - Manage Custom Domains Success" src="{{ site.baseurl }}/assets/Screen-Shot-2013-08-03-at-20.06.49.png" width="679" height="553" /></li>
+<li>Do the same thing for the "www" variant of your domain.<img class="aligncenter size-full wp-image-2652" alt="Azure Dashboard - Manage Custom Domains Success" src="{{ site.baseurl }}/assets/Screen-Shot-2013-08-03-at-20.07.16.png" width="676" height="549" /></li>
+<li>However you may see a message like this. <img class="aligncenter size-full wp-image-2622" alt="Azure Dashboard - Manage Custom Domains Fail" src="{{ site.baseurl }}/assets/Screen-Shot-2013-08-03-at-14.40.11.png" width="859" height="586" /></li>
+<li>If you do, just wait a few minutes and try again, in this example I entered my final A Record on the Fasthosts page at 1440BST on a Saturday afternoon and I didn't get a green tick until 1515BST. This is where previously I would often end up going back and re-entering CNAME records, resetting DNS, convinced that I had done something wrong only to just prolong the delay while the DNS update propagates. I found <a href="http://www.digwebinterface.com" target="_blank">http://www.digwebinterface.com</a> and <a href="http://www.viewdns.info" target="_blank">http://www.viewdns.info</a> useful tools to see if the DNS records have propagated.</li>
+<li>And that's it... Your domain should now be pointing to your Azure website. <img class="aligncenter size-full wp-image-2692" alt="Custom domain pointing to Azure Web Site hosting" src="{{ site.baseurl }}/assets/Screen-Shot-2013-08-04-at-00.33.39.png" width="1156" height="988" /></li>
+</ul>

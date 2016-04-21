@@ -1,0 +1,49 @@
+---
+layout: post
+title: How to FTP to your Azure Website
+date: 2013-10-18 16:14:29.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- Azure
+- Microsoft
+tags:
+- azure
+- azure ftp
+- azure website
+- cloud website
+- ftp
+- ftp to azure
+- how to ftp to azure website
+- how to maintain azure website
+- publish profile
+- windows azure
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1460593736;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:2412;}i:1;a:1:{s:2:"id";i:3782;}i:2;a:1:{s:2:"id";i:519;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>Yesterday evening I experienced my first WordPress White Screen of Death when trying to open the admin page on this blog. For those unfamiliar with the term, it can be caused by the process running out of memory on the server resulting in a plain white page being served up instead of some part of the site.</p>
+<p>This excess memory usage is normally caused by a plugin misbehaving and I have been playing with some new plugins lately so I figured this might be the problem. A quick google took me to <a href="http://www.wpbeginner.com/wp-tutorials/how-to-fix-the-wordpress-white-screen-of-death/" target="_blank">this solution</a> which looked simple enough; FTP onto the site, rename the plugins directory to solve the white screen problem, then re-enable them one at the time to see which one causes the issue.</p>
+<p>But now I'm using Azure as my web host, how on earth do I FTP onto it? Here's how:</p>
+<ol>
+<li>Log in to your <a href="https://manage.windowsazure.com" target="_blank">Windows Azure dashboard</a>.</li>
+<li>Select the website you want to FTP onto.</li>
+<li>Click to download the publish profile. <img class="aligncenter  wp-image-4232" alt="AzureDashboard" src="{{ site.baseurl }}/assets/AzureDashboard.png" width="594" height="534" /></li>
+<li>You will end up with a file which looks something like this:<img class="aligncenter size-full wp-image-4252" alt="PublishProfile" src="{{ site.baseurl }}/assets/PublishProfile1.png" width="783" height="247" /><br />
+I opened this in Programmers Notepad so it was easier to read. Find the FTP publishProfile node and the fields are pretty self explanatory.</p>
+<ul>
+<li><strong>publishUrl</strong> - This is the address to FTP to.</li>
+<li><strong>userName </strong>- Your username.</li>
+<li><strong>userPWD</strong> - Your password.</li>
+</ul>
+</li>
+<li>Bung these into your favorite FTP client, et voila!</li>
+</ol>

@@ -1,0 +1,27 @@
+---
+layout: post
+title: UPDATE if exists, INSERT if not in MySQL (AKA the UPSERT)
+date: 2014-04-16 22:46:30.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- Databases
+- MySQL
+- Software Development
+tags: []
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461278451;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:131;}i:1;a:1:{s:2:"id";i:346;}i:2;a:1:{s:2:"id";i:401;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>It's a bit of a long running joke that I'm not really a database guy, but let's just say that lately I've been exposed to a little more DB than usual and it's been quite a steep learning curve.</p>
+<p>Anyway, this little feature in MySQL has proved pretty useful to me so I thought I'd make a note of it on my in-lieu-of-a-functioning-memory blog.</p>
+<p>As the title says, what if you want to  combine the <strong>C</strong>reate and <strong>U</strong>pdate from your <strong>CRUD</strong> code in one query; say you're performing an <em>INSERT</em> with a nested <em>SELECT</em> to insert more than one row, but there's a chance that one of these inserts breaks a unique key constraint somewhere and so you want to <em>UPDATE</em> in that case instead?</p>
+<p>This is where <em><a href="http://dev.mysql.com/doc/refman/5.1/en/insert-on-duplicate.html" target="_blank">INSERT ... ON DUPLICATE</a></em> comes to the rescue.</p>

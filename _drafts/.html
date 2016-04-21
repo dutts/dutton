@@ -1,0 +1,82 @@
+---
+layout: post
+title: ''
+date: 
+type: post
+published: false
+status: draft
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>AttachedProperties:GridViewColumn.SortingProperty="FIANumber"<br />
+CellTemplate="{StaticResource DriverCellTemplate}"/&gt;</p>
+<p>AttachedProperties:GridViewColumn.SortingProperty="GridPosition.Value"&gt;</p>
+<p>&lt;Controls:NumericTextBox<br />
+ToolTip="The Car's Grid Position"<br />
+MinValue="1" MaxValue="99" DecimalPlaces="0"<br />
+TextValue="{Binding Path=GridPosition.Value, Mode=TwoWay}" /&gt;</p>
+<p>---</p>
+<p>GridViewBehavior.cs</p>
+<p>public static class GridViewBehavior<br />
+{<br />
+public static bool GetIsGridSortable(GridView gridView)<br />
+{<br />
+return (bool) gridView.GetValue(IsGridSortableProperty);<br />
+}</p>
+<p>public static void SetIsGridSortable(GridView gridView, bool value)<br />
+{<br />
+gridView.SetValue(IsGridSortableProperty, value);<br />
+}</p>
+<p>public static readonly DependencyProperty IsGridSortableProperty =<br />
+DependencyProperty.RegisterAttached("IsGridSortable", typeof (bool), typeof (GridViewBehavior),<br />
+new UIPropertyMetadata(false, OnIsGridSortableChanged));</p>
+<p>private static void OnIsGridSortableChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)<br />
+{<br />
+var lv = d as ListView;<br />
+if (lv == null) return;</p>
+<p>if (e.NewValue is bool == false)<br />
+return;</p>
+<p>if ((bool) e.NewValue)<br />
+{<br />
+lv.AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(GridViewColumnHeaderClickHandler));<br />
+}<br />
+else<br />
+{<br />
+lv.RemoveHandler(ButtonBase.ClickEvent, new RoutedEventHandler(GridViewColumnHeaderClickHandler));<br />
+}<br />
+}</p>
+<p>private static GridViewColumnHeader _lastHeaderClicked;<br />
+private static ListSortDirection _lastDirection = ListSortDirection.Ascending;</p>
+<p>private static void GridViewColumnHeaderClickHandler(object sender, RoutedEventArgs args)<br />
+{<br />
+var headerClicked = args.OriginalSource as GridViewColumnHeader;<br />
+if (headerClicked == null) return;</p>
+<p>var lv = sender as ListView;<br />
+if (lv == null) return;</p>
+<p>ListSortDirection direction;</p>
+<p>if (headerClicked != _lastHeaderClicked)<br />
+{<br />
+direction = ListSortDirection.Ascending;<br />
+}<br />
+else<br />
+{<br />
+direction = _lastDirection == ListSortDirection.Ascending ? ListSortDirection.Descending : ListSortDirection.Ascending;<br />
+}</p>
+<p>var sortPropertyName = AttachedProperties.GridViewColumn.GetSortingProperty(headerClicked.Column);</p>
+<p>lv.Items.SortDescriptions.Clear();<br />
+var sd = new SortDescription(sortPropertyName, direction);<br />
+lv.Items.SortDescriptions.Add(sd);<br />
+lv.Items.Refresh();</p>
+<p>_lastHeaderClicked = headerClicked;<br />
+_lastDirection = direction;<br />
+}<br />
+}</p>
+<p>&nbsp;</p>

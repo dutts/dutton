@@ -1,0 +1,39 @@
+---
+layout: post
+title: How to do work in the background in C#
+date: 
+type: post
+published: false
+status: draft
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>.Net 4 gave us the <a href="http://msdn.microsoft.com/en-us/library/system.threading.cancellationtoken.aspx" target="_blank">CancellationToken</a></p>
+<h2>Background Worker</h2>
+<p>gdfgdg</p>
+<h2>Task Parallel Library</h2>
+<pre name="code" class="c-sharp">
+_tokenSource = new CancellationTokenSource();
+var token = _tokenSource.Token;
+_task = Task.Factory.StartNew(() =>
+{
+    while (true)
+    {
+        // Do your thang
+        Thread.Sleep(500);
+        if (token.IsCancellationRequested) break;
+    }
+}, token);
+</pre>
+<h2>Threads</h2>
+<p>hjfghfh</p>
+<h2>Reactive Extensions (Rx)</h2>
+<p>hgjghjgh</p>

@@ -1,0 +1,316 @@
+---
+layout: post
+title: ES Projections for Dummies
+date: 
+type: post
+published: false
+status: draft
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+  _publicize_facebook_user: https://www.facebook.com/dutts303
+  _publicize_twitter_user: '@dutts303'
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>using System;<br />
+using System.Collections.Generic;<br />
+using System.IO;<br />
+using System.Linq;<br />
+using System.Text;<br />
+using System.Threading;<br />
+using System.Threading.Tasks;<br />
+using EventStore.ClientAPI;<br />
+using Newtonsoft.Json;</p>
+<p>namespace ESProjectionSpikeConsumer<br />
+{<br />
+    class Program<br />
+    {<br />
+        private static readonly Encoding Encoding = Encoding.UTF8;<br />
+        private static readonly JsonSerializer Serializer = new JsonSerializer();</p>
+<p>        static void Main(string[] args)<br />
+        {<br />
+            var uri = new Uri("tcp://admin:changeit@127.0.0.1:1113");</p>
+<p>            var settings = ConnectionSettings<br />
+                .Create()<br />
+                .KeepReconnecting()<br />
+                .UseConsoleLogger()<br />
+                .Build();</p>
+<p>            using (var connection = EventStoreConnection.Create(settings, uri))<br />
+            {<br />
+                connection.ConnectAsync().Wait();</p>
+<p>                var subscription = connection.SubscribeToStreamAsync(<br />
+                    "foo_and_bar_projected",<br />
+                    true,<br />
+                    (storeSubscription, @event) =><br />
+                    {<br />
+                        var eventString = Encoding.GetString(@event.Event.Data);<br />
+                        using (var stringReader = new StringReader(eventString))<br />
+                        {<br />
+                            using (var jsonReader = new JsonTextReader(stringReader))<br />
+                            {<br />
+                               var fooAndBar = (FooAndBar)Serializer.Deserialize(jsonReader, typeof(FooAndBar));<br />
+                                Console.WriteLine("{0} - {1}, {2} - {3}", fooAndBar.Foo, fooAndBar.FooValue, fooAndBar.Bar, fooAndBar.BarValue);<br />
+                            }<br />
+                        }<br />
+                    },<br />
+                    (storeSubscription, reason, arg3) => { });</p>
+<p>                Console.ReadLine();<br />
+            }<br />
+        }<br />
+    }<br />
+}</p>
+<p>---</p>
+<p>using System;<br />
+using System.IO;<br />
+using System.Text;<br />
+using EventStore.ClientAPI;<br />
+using Newtonsoft.Json;</p>
+<p>namespace ESProjectionSpikeConsumer<br />
+{<br />
+    public static class SerialisationExtensions<br />
+    {<br />
+        private static readonly JsonSerializer Serializer = new JsonSerializer();</p>
+<p>        private static readonly Encoding Encoding = Encoding.UTF8;</p>
+<p>        private static string SerializeEvent(IEvent value)<br />
+        {<br />
+            var builder = new StringBuilder();</p>
+<p>            using (var stringWriter = new StringWriter(builder))<br />
+            {<br />
+                using (var jsonWriter = new JsonTextWriter(stringWriter))<br />
+                {<br />
+                    Serializer.Serialize(jsonWriter, value);</p>
+<p>                    return builder.ToString();<br />
+                }<br />
+            }<br />
+        }</p>
+<p>        private static IEvent DeserializeEvent(string value, Type type)<br />
+        {<br />
+            using (var stringReader = new StringReader(value))<br />
+            {<br />
+                using (var jsonReader = new JsonTextReader(stringReader))<br />
+                {<br />
+                    return (IEvent)Serializer.Deserialize(jsonReader, type);<br />
+                }<br />
+            }<br />
+        }</p>
+<p>        public static EventData AsEventData(this IEvent @event)<br />
+        {<br />
+            var serialized = SerializeEvent(@event);<br />
+            var encoded = Encoding.GetBytes(serialized);<br />
+            return new EventData(Guid.NewGuid(), @event.GetType().AssemblyQualifiedName, true, encoded, new byte[0]);<br />
+        }</p>
+<p>        public static IEvent AsDomainEvent(this RecordedEvent @event)<br />
+        {<br />
+            var serialized = Encoding.GetString(@event.Data);<br />
+            var type = Type.GetType(@event.EventType);<br />
+            return DeserializeEvent(serialized, type);<br />
+        }<br />
+    }<br />
+}</p>
+<p>---</p>
+<p>namespace ESProjectionSpikeConsumer<br />
+{<br />
+    public interface IEvent { }</p>
+<p>    public class FooEvent : IEvent<br />
+    {<br />
+        public string FooName { get; set; }<br />
+        public int FooInt { get; set; }<br />
+    }</p>
+<p>    public class BarEvent : IEvent<br />
+    {<br />
+        public string BarName { get; set; }<br />
+        public double BarDouble { get; set; }<br />
+    }</p>
+<p>    public class FooAndBar<br />
+    {<br />
+        public string Foo { get; set; }<br />
+        public int FooValue { get; set; }<br />
+        public string Bar { get; set; }<br />
+        public double BarValue { get; set; }<br />
+    }<br />
+}</p>
+<p>---</p>
+<p>namespace ESProjectionSpikeProducer<br />
+{<br />
+    public interface IEvent { }</p>
+<p>    public class FooEvent : IEvent<br />
+    {<br />
+        public string FooName { get; set; }<br />
+        public int FooInt { get; set; }<br />
+    }</p>
+<p>    public class BarEvent : IEvent<br />
+    {<br />
+        public string BarName { get; set; }<br />
+        public double BarDouble { get; set; }<br />
+    }<br />
+}</p>
+<p>---</p>
+<p>using System;<br />
+using System.Collections.Generic;<br />
+using System.IO;<br />
+using System.Linq;<br />
+using System.Text;<br />
+using System.Threading;<br />
+using System.Threading.Tasks;<br />
+using EventStore.ClientAPI;<br />
+using Newtonsoft.Json;</p>
+<p>namespace ESProjectionSpikeProducer<br />
+{<br />
+    internal class Program<br />
+    {<br />
+        private static void Main(string[] args)<br />
+        {<br />
+            var uri = new Uri("tcp://admin:changeit@127.0.0.1:1113");</p>
+<p>            var settings = ConnectionSettings<br />
+                .Create()<br />
+                .KeepReconnecting()<br />
+                .UseConsoleLogger()<br />
+                .Build();</p>
+<p>            using (var connection = EventStoreConnection.Create(settings, uri))<br />
+            {<br />
+                connection.ConnectAsync().Wait();</p>
+<p>                var rng = new Random();</p>
+<p>                int fooCount = 0, barCount = 0;</p>
+<p>                while (true)<br />
+                {<br />
+                    if (rng.Next(0, 2)%2 == 0)<br />
+                    {<br />
+                        var @event = new FooEvent {FooName = "FooName " + fooCount++, FooInt = fooCount};<br />
+                        var foo = connection.AppendToStreamAsync("Foo-" + rng.Next(0, 10), ExpectedVersion.Any, @event.AsEventData()).Result;<br />
+                    }<br />
+                    else<br />
+                    {<br />
+                        var @event = new BarEvent {BarName = "BarName " + barCount++, BarDouble = barCount};<br />
+                        var bar = connection.AppendToStreamAsync("Bar-" + rng.Next(0,10), ExpectedVersion.Any, @event.AsEventData()).Result;<br />
+                    }<br />
+                    Thread.Sleep(1000);<br />
+                }<br />
+            }<br />
+        }<br />
+    }<br />
+}</p>
+<p>---</p>
+<p>using System;<br />
+using System.IO;<br />
+using System.Text;<br />
+using EventStore.ClientAPI;<br />
+using Newtonsoft.Json;</p>
+<p>namespace ESProjectionSpikeProducer<br />
+{<br />
+    public static class SerialisationExtensions<br />
+    {<br />
+        private static readonly JsonSerializer Serializer = new JsonSerializer();</p>
+<p>        private static readonly Encoding Encoding = Encoding.UTF8;</p>
+<p>        private static string SerializeEvent(IEvent value)<br />
+        {<br />
+            var builder = new StringBuilder();</p>
+<p>            using (var stringWriter = new StringWriter(builder))<br />
+            {<br />
+                using (var jsonWriter = new JsonTextWriter(stringWriter))<br />
+                {<br />
+                    Serializer.Serialize(jsonWriter, value);</p>
+<p>                    return builder.ToString();<br />
+                }<br />
+            }<br />
+        }</p>
+<p>        private static IEvent DeserializeEvent(string value, Type type)<br />
+        {<br />
+            using (var stringReader = new StringReader(value))<br />
+            {<br />
+                using (var jsonReader = new JsonTextReader(stringReader))<br />
+                {<br />
+                    return (IEvent)Serializer.Deserialize(jsonReader, type);<br />
+                }<br />
+            }<br />
+        }</p>
+<p>        public static EventData AsEventData(this IEvent @event)<br />
+        {<br />
+            var serialized = SerializeEvent(@event);<br />
+            var encoded = Encoding.GetBytes(serialized);<br />
+            return new EventData(Guid.NewGuid(), @event.GetType().AssemblyQualifiedName, true, encoded, new byte[0]);<br />
+        }</p>
+<p>        public static IEvent AsDomainEvent(this RecordedEvent @event)<br />
+        {<br />
+            var serialized = Encoding.GetString(@event.Data);<br />
+            var type = Type.GetType(@event.EventType);<br />
+            return DeserializeEvent(serialized, type);<br />
+        }<br />
+    }<br />
+}<br />
+---</p>
+<p>fromCategory('Bar')<br />
+    .foreachStream()<br />
+    .when({<br />
+        "$any": function (state, ev) {<br />
+            emit("foo_and_bar-bar_projection", "bar_projection", ev);<br />
+        }<br />
+    });</p>
+<p>---</p>
+<p>fromCategory('foo_and_bar')<br />
+    .foreachStream()<br />
+    .when({<br />
+        "foo_projection": function (state, ev) {<br />
+            emit("foo_and_bar_combined", "foo_and_bar_foo", ev);<br />
+        },<br />
+        "bar_projection": function (state, ev) {<br />
+            emit("foo_and_bar_combined", "foo_and_bar_bar", ev);<br />
+        }<br />
+    });</p>
+<p>---</p>
+<p>fromStream('foo_and_bar_combined')<br />
+    .when({<br />
+        "$init": function (state, ev) {<br />
+            return {<br />
+                Foo: "",<br />
+                FooValue: 0,<br />
+                Bar: "",<br />
+                BarValue: 0<br />
+            }<br />
+        },<br />
+        "foo_and_bar_foo": function (state, ev) {<br />
+            state.Foo = ev.data.data.data.FooName;<br />
+            state.FooValue = ev.data.data.data.FooInt;<br />
+            emit("foo_and_bar_projected", "FooAndBar", state);<br />
+        },<br />
+        "foo_and_bar_bar": function (state, ev) {<br />
+            state.Bar = ev.data.data.data.BarName;<br />
+            state.BarValue = ev.data.data.data.BarDouble;<br />
+            emit("foo_and_bar_projected", "FooAndBar", state);<br />
+        }<br />
+    });</p>
+<p>---</p>
+<p>fromCategory('Foo')<br />
+    .foreachStream()<br />
+    .when({<br />
+        "$any": function (state, ev) {<br />
+            emit("foo_and_bar-foo_projection", "foo_projection", ev);<br />
+        }<br />
+    });</p>
+<p>---</p>
+<p>fromStreams('$ce-Foo', '$ce-Bar')<br />
+    .when({<br />
+        "$init": function (state, ev) {<br />
+            return {<br />
+                Foo: "",<br />
+                FooValue: 0,<br />
+                Bar: "",<br />
+                BarValue: 0<br />
+            }<br />
+        },<br />
+        "ESProjectionSpikeProducer.FooEvent, ESProjectionSpikeProducer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": function (state, ev) {<br />
+            state.Foo = ev.data.FooName;<br />
+            state.FooValue = ev.data.FooInt;<br />
+            emit("foo_and_bar_projected", "FooAndBar", state);<br />
+        },<br />
+        "ESProjectionSpikeProducer.BarEvent, ESProjectionSpikeProducer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": function (state, ev) {<br />
+            state.Bar = ev.data.BarName;<br />
+            state.BarValue = ev.data.BarDouble;<br />
+            emit("foo_and_bar_projected", "FooAndBar", state);<br />
+        }<br />
+    });</p>

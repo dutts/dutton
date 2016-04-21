@@ -1,0 +1,127 @@
+---
+layout: post
+title: appSettings, applicationSettings and custom configSections in app.config
+date: 2013-06-10 22:36:10.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- .Net
+- C#
+- Software Development
+tags:
+- .NET
+- app.config
+- application settings
+- appSettings
+- c#
+- configSections
+- configuration
+- programming
+- settings
+- user settings
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _wpas_skip_2785187: '1'
+  _wpas_skip_3579159: '1'
+  _wpas_skip_2785197: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461294430;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:558;}i:1;a:1:{s:2:"id";i:20;}i:2;a:1:{s:2:"id";i:378;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>For some reason the different ways of handling application settings in C# always throws me, probably because I tend to write it once and forget about it until it comes up again many months later.</p>
+<p><strong>&lt;applicationSettings&gt;</strong></p>
+<p>If you create a default settings file in my Project, which creates an app.config and a Settings.settings under Properties, entries here can either be in User or Application scope and result in entries added to the app.config file under &lt;applicationSettings&gt; or &lt;userSettings&gt; sections appropriately, looking like this:</p>
+<pre name="code" class="xml"> 
+&lt;userSettings&gt;
+&lt;AppConfigTest.Properties.Settings&gt;
+&lt;setting name="MyUserScopeSetting" serializeAs="String"&gt;
+&lt;value&gt;foo1&lt;/value&gt;
+&lt;/setting&gt;
+&lt;/AppConfigTest.Properties.Settings&gt;
+&lt;/userSettings&gt;
+&lt;applicationSettings&gt;
+&lt;AppConfigTest.Properties.Settings&gt;
+&lt;setting name="MyApplicationScopeSetting" serializeAs="String"&gt;
+&lt;value&gt;foo2&lt;/value&gt;
+&lt;/setting&gt;
+&lt;/AppConfigTest.Properties.Settings&gt;
+&lt;/applicationSettings&gt;
+</pre>
+<p>These can then be accessed from within your code using:</p>
+<pre name="code" class="c-sharp"> 
+var setting1 = Properties.Settings.Default.MyApplicationScopeSetting;
+var setting2 = Properties.Settings.Default.MyUserScopeSetting;
+</pre>
+<p>These will appear under your Intellisense in Visual Studio.</p>
+<p>You can also write to these, just make sure you call Save() afterwards:</p>
+<pre name="code" class="c-sharp"> 
+Properties.Settings.Default.MyApplicationScopeSetting = "new value";
+Properties.Settings.Default.Save();
+</pre>
+<p><strong>&lt;appSettings&gt;</strong></p>
+<p>You might also find app.config files containing elements added directly to an appSettings section like this:</p>
+<pre name="code" class="xml"> 
+&lt;appSettings&gt;
+&lt;add key="MySetting1" value="Value 1" /&gt;
+&lt;add key="MySetting2" value="Value 2" /&gt;
+&lt;/appSettings&gt;
+</pre>
+<p>These can be accessed using the ConfigurationManager:</p>
+<pre name="code" class="c-sharp"> 
+var setting1 = ConfigurationManager.AppSettings["MySetting1"];
+var setting2 = ConfigurationManager.AppSettings["MySetting2"];
+</pre>
+<p>This is accessed by key string, so will not appear under Intellisense, but will return null if the key doesn't exist.</p>
+<p>Note that there is no type checking with appSettings; you cannot safely assume the type of the configuration item and someone could have changed your integer to a string in the config file for all you know and you'd have to deal with it.</p>
+<p><strong>Custom configSection</strong></p>
+<p>A third, and I believe now recommended since .Net 2.0 approach is to create a custom configSection within app.config. This needs to be represented in code, through a class which derives from ConfigurationSection:</p>
+<pre name="code" class="c-sharp">    public class MyExampleConfigurationSection : ConfigurationSection
+    {
+        private static readonly ConfigurationProperty MyExampleString;
+
+        private static readonly ConfigurationPropertyCollection ConfigurationProperties;
+
+        static MyExampleConfigurationSection()
+        {
+            // Define your configuration properties here
+            MyExampleString = new ConfigurationProperty("myExampleStringValue", typeof (string), null,
+                                                         ConfigurationPropertyOptions.IsRequired);
+
+            ConfigurationProperties = new ConfigurationPropertyCollection {MyExampleString};
+        }
+
+        [ConfigurationProperty("myExampleStringValue", IsRequired = true)]
+        public string MyExampleStringValue
+        {
+            get { return (string)base[MyExampleString]; }
+        }
+
+        protected override ConfigurationPropertyCollection Properties
+        {
+            get { return ConfigurationProperties; }
+        }
+    }</pre>
+<p>Like the userSettings and applicationSettings sections, built-in configuration sections must be explicitly defined in a new sectionGroup under configSections, like so:</p>
+<pre name="code" class="xml"> 
+&lt;configSections&gt;
+&lt;section name="example" type="AppConfigTest.MyExampleConfigurationSection, AppConfigTest"/&gt;
+
+&lt;/configSections&gt;
+</pre>
+<p>can be set like this:</p>
+<pre name="code" class="c-sharp"> 
+&lt;example myExampleStringValue="Foo"/&gt;
+</pre>
+<p>and then queried in code like this:</p>
+<pre name="code" class="c-sharp">             var myExampleConfigurationSection =
+                ConfigurationManager.GetSection("example") as MyExampleConfigurationSection;
+            if (myExampleConfigurationSection != null)
+            {
+                Console.WriteLine(myExampleConfigurationSection.MyExampleStringValue);
+            }</pre>

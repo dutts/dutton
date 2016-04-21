@@ -1,0 +1,54 @@
+---
+layout: post
+title: 'How to fix: "The Windows Phone Emulator wasn''t able to create the virtual
+  machine: Generic failure" under VMWare Fusion 4.1.4'
+date: 2013-02-26 08:13:22.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- Microsoft
+- Software Development
+- Visual Studio 2012
+- Windows
+- Windows 8 Phone
+tags:
+- .NET
+- error
+- failure
+- generic failure
+- phone emulator
+- programming
+- 'The Windows Phone Emulator wasn''t able to create the virtual machine: Generic
+  failure'
+- windows 8 phone
+- windows phone emulator
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461274940;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:1732;}i:1;a:1:{s:2:"id";i:477;}i:2;a:1:{s:2:"id";i:62;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>I use an iMac at home, so any Windows development is done in a Windows 8 virtual machine running under VMWare Fusion 4.1.4.</p>
+<p>I ran into a problem this evening when playing around with some Windows Phone 8 development and thought I'd share the solution. It turns out the default Fusion configuration doesn't support the hardware assisted visualization (Hyper-V) that the Windows Phone SDK Phone Simulator uses.</p>
+<p>Not to worry, just do the following (works for me under 4.1.4).<!--more--></p>
+<ul>
+<ul>
+<li>Shutdown the virtual machine.</li>
+<li>From the Virtual Machine Library Ctrl-Click on the virtual machine's icon and select <strong>Show in finder</strong>.</li>
+<li>Ctrl-click on the vm's bundle under Finder and click <strong>Show Package Contents</strong>.</li>
+<li>In there you will find a .vmx file, this is the virtual machine's configuration file. Open this in your favorite editor.</li>
+<li>Add the following two lines to the end of the file:</li>
+</ul>
+</ul>
+<blockquote><p><code>vhv.enable = "TRUE"<br />
+hypervisor.cpuid.v0 = "FALSE"</code></p></blockquote>
+<ul>
+<li>Save the file, restart your VM and the Phone Simulator will work fine.</li>
+</ul>
+<p>NB: My VM has two processors, I haven't tried this on a single process VM yet.</p>

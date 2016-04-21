@@ -1,0 +1,104 @@
+---
+layout: post
+title: How to select all WPF TextBox text on focus using an Attached Behavior
+date: 2013-07-25 14:10:46.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- C#
+- Software Development
+- WPF
+tags:
+- attached
+- attached behavior
+- attached behaviour
+- behavior
+- behaviour
+- c#
+- focus
+- programming
+- select textbox text on focus
+- selectall
+- TextBox
+- textbox selectall
+- WPF
+- wpf textbox select on focus
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _wpas_skip_2785187: '1'
+  _wpas_skip_3579159: '1'
+  _wpas_skip_2785197: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461269317;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:323;}i:1;a:1:{s:2:"id";i:346;}i:2;a:1:{s:2:"id";i:518;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p><em><strong>UPDATE 12/11/2013:</strong> Fixed a mistake in the example code; the setter and getter shouldn't have "Property" in the name.</em></p>
+<p>I have a simple requirement to select all of the text in a WPF TextBox when it receives focus, this lets a user tab through a bunch of TextBoxes and edit the values directly without having to use the mouse.</p>
+<p>Although there are a few methods I could use, I thought I'd tackle this using the "Ramora", or "Attached Behavior" pattern. I always forget the syntax, hence this post.</p>
+<p>Implementing an Attached Behavior involves creating a boolean Attached Property to indicate whether the behavior is to be applied, and then implementing the behavior in the property's change handler, like this:</p>
+<pre name="code" class="c-sharp">
+    public class TextBoxBehavior
+    {
+        public static bool GetSelectAllTextOnFocus(TextBox textBox)
+        {
+            return (bool)textBox.GetValue(SelectAllTextOnFocusProperty);
+        }
+
+        public static void SetSelectAllTextOnFocus(TextBox textBox, bool value)
+        {
+            textBox.SetValue(SelectAllTextOnFocusProperty, value);
+        }
+
+        public static readonly DependencyProperty SelectAllTextOnFocusProperty =
+            DependencyProperty.RegisterAttached(
+                "SelectAllTextOnFocus",
+                typeof (bool),
+                typeof (TextBoxBehavior),
+                new UIPropertyMetadata(false, OnSelectAllTextOnFocusChanged));
+
+        private static void OnSelectAllTextOnFocusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var textBox = d as TextBox;
+            if (textBox == null) return;
+
+            if (e.NewValue is bool == false) return;
+
+            if ((bool) e.NewValue)
+            {
+                textBox.GotFocus += SelectAll;
+                textBox.PreviewMouseDown += IgnoreMouseButton;
+            }
+            else
+            {
+                textBox.GotFocus -= SelectAll;
+                textBox.PreviewMouseDown -= IgnoreMouseButton;
+            }
+        }
+
+        private static void SelectAll(object sender, RoutedEventArgs e)
+        {
+            var textBox = e.OriginalSource as TextBox;
+            if (textBox == null) return;
+            textBox.SelectAll();
+        }
+
+        private static void IgnoreMouseButton(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (textBox == null || textBox.IsKeyboardFocusWithin) return;
+
+            e.Handled = true;
+            textBox.Focus();
+        }
+    }</pre>
+<p>Which means you can use it like this in XAML:</p>
+<pre name="code" class="c-sharp">
+&lt;TextBox Text="Some Text" behaviors:TextBoxBehavior.SelectAllTextOnFocus="True"/&gt;</pre>
+<p>So as you can see, it's really quite simple. I hook into the GotFocus event in `OnSelectAllTextOnFocusChanged`, and call `SelectAll` where I select all of the TextBox's text.</p>
+<p>I added a further event handler to ensure that mouse clicks within the TextBox didn't highlight the text when it already had focus but this isn't essential.</p>

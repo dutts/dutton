@@ -1,0 +1,52 @@
+---
+layout: post
+title: Making a function call on another thread using the C# Dispatcher class
+date: 2009-03-30 18:00:09.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- C#
+- Software Development
+tags:
+- c#
+- Dispatcher
+- multi-threaded
+- programming
+- threads
+meta:
+  _edit_last: '2'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461318033;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:109;}i:1;a:1:{s:2:"id";i:378;}i:2;a:1:{s:2:"id";i:1732;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>There may be a situation when you need to execute a function on a different thread, such as ensuring that calls across the interface between a multi-threaded dll and its single-threaded user are made on the same, single thread.  To achive this, you can use the target thread's Dispatcher object as follows:</p>
+<ol>
+<li>Create a delegate of the function you wish to be able to call:
+<pre name="code" class="c-sharp">
+public delegate void MyDelegate(int i, string str);
+public class TargetThreadClass 
+{ 
+    public TargetThreadClass() 
+    { 
+        MyDelegate del = new MyDelegate(this.FuncToExec); 
+    }  
+    public void FuncToExec(int i, string str) 
+    { 
+       // Do something 
+   } 
+}</pre>
+</li>
+<li>Within the target thread, create an instance of a Dispatcher object and set it to the thread's current dispatcher:
+<pre name="code" class="c-sharp">
+Dispatcher UserDispatcher = Dispatcher.CurrentDispatcher;</pre>
+<p>Then pass this dispatcher, along with the delegate into the source thread.</li>
+<li>Then to call FuncToExec on the target thread, use:
+<pre name="code" class="c-sharp">
+UserDispatcher.Invoke(del, new object[] { 123, "arg string"});</pre>
+<p>Where the first parameter of Invoke is the delegate itself and the second an array of the delegate's parameters (if any), in this example the delegate takes an int and a string.</li>
+</ol>

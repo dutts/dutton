@@ -1,0 +1,41 @@
+---
+layout: post
+title: 'How to fix: "The command you are attempting cannot be completed because the
+  file ''xxx.vdproj'' is under source control and is not checked out" when building
+  solutions containing setup projects in VS2010'
+date: 2013-04-16 12:59:27.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- Microsoft
+- Software Development
+- Visual Studio 2010
+tags:
+- checked out
+- command you are attempting cannot be completed
+- endless dialog
+- Microsoft Visual Studio 2010
+- programming
+- under source control and is not checked out
+- vdproj
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461304676;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:405;}i:1;a:1:{s:2:"id";i:2112;}i:2;a:1:{s:2:"id";i:545;}}}}
+  _wpas_skip_2785187: '1'
+  _wpas_skip_3579159: '1'
+  _wpas_skip_2785197: '1'
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>Today I revisited some old projects under Visual Studio 2010 to carry out some maintenance. The solution file contains a handful of C# code projects, and two Deployment Projects (vdproj). Every time I tried to build, it would succeed but I would be prompted with this dialog for each Deployment Project.</p>
+<p><a href="http://www.dutton.me.uk/wp-content/uploads/2013/04/VS2010-vdproj-checked-in.png"><img class="aligncenter size-full wp-image-512" alt="VS2010 vdproj checked in" src="{{ site.baseurl }}/assets/VS2010-vdproj-checked-in.png" width="505" height="199" /></a></p>
+<p>Clicking OK or closing the dialog would prompt another to pop-up, at least a dozen or so times before finally finishing the build.</p>
+<p>A bit of digging about (some of the links provided in various forums posts have since become broken) and Microsoft released a hot fix back in April 2011 which you can find <a href="https://www.microsoft.com/en-gb/download/details.aspx?id=27211">here.</a> According to one post, the issue is down to a different hashing algorithm employed by Microsoft for generating GUIDs in SP1 of VS2010.</p>
+<p>Any deployment projects created before SP1 and checked into source control will then attempt to update the component GUID and popup this error, although I seem to get this on every build if the .vdproj is checked in, regardless of whether VS2010 SP1 has previously updated the file.</p>
+<p>Fortunately installing this hot fix makes the problem go away and stops me having to mash my enter key every time I want to build.</p>

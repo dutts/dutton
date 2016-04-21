@@ -1,0 +1,116 @@
+---
+layout: post
+title: Introduction to Caliburn.Micro on Windows Phone 8
+date: 2013-11-14 18:00:51.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- .Net
+- C#
+- Software Development
+- Windows 8 Phone
+tags:
+- .NET
+- beginner
+- c#
+- caliburn
+- caliburn.micro
+- caliburn.micro windows phone 8
+- caliburn.micro wp8
+- guide
+- introduction
+- introduction to caliburn.micro
+- programming
+- windows phone 8
+- windows phone development
+- wp8
+- wp8 development
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461154051;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:485;}i:1;a:1:{s:2:"id";i:477;}i:2;a:1:{s:2:"id";i:444;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>I thought I'd try something different with my latest home software project; after writing a "ViewModelBase" INotifyPropertyChanged implementation for the millionth time (I really should start creating some shared libraries) I decided to have a look at one of many MVVM libraries out there and stumbled across <a href="http://caliburnmicro.codeplex.com/" target="_blank">Caliburn.Micro</a>. Here are some newbie notes on my experiences.</p>
+<p><strong>Windows Phone 8 Support</strong><br />
+I'm writing a Windows Phone 8 application, so fell at the first hurdle after installing the package through nuget and following the tutorial <a href="http://caliburnmicro.codeplex.com/wikipage?title=Basic%20Configuration%2c%20Actions%20and%20Conventions&amp;referringTitle=Documentation" target="_blank">here</a>. This doesn't work under WinRT and so my attempts at using the generic form of <em>Bootstrapper</em> were met with</p>
+<blockquote><p>The non-generic type 'Caliburn.Micro.Bootstrapper' cannot be used with type arguments.</p></blockquote>
+<p>instead you need to derive from <em>PhoneBootstrapper</em> to end up with something looking like this:</p>
+<pre name="code" class="c-sharp">    public class AppBootstrapper : PhoneBootstrapper
+    {
+        PhoneContainer container;
+
+        protected override void Configure()
+        {
+            container = new PhoneContainer();
+
+            container.RegisterPhoneServices(RootFrame);
+            container.PerRequest&lt;MainPageViewModel&gt;();
+
+            AddCustomConventions();
+        }
+
+        static void AddCustomConventions()
+        {
+        }
+
+        protected override IEnumerable &lt;object&gt; GetAllInstances(Type service)
+        {
+            return container.GetAllInstances(service);
+        }
+
+        protected override void BuildUp(object instance)
+        {
+            container.BuildUp(instance);
+        }
+    }</pre>
+<p>Which you can then use as a standard template bootstrapper.</p>
+<p><strong>Views and ViewModels</strong></p>
+<p>Caliburn.Micro applies a <em>View-Model First</em> approach wiring up its <em>Views</em> and <em>ViewModels</em> though a naming convention. If you put all of your <em>Views</em> in a folder called \Views and all of your <em>ViewModels</em> in a folder called \ViewModels under your project root you can then register your <em>ViewModel</em> with the container in your bootstrapper (as I have done with <em>MainPageViewModel</em> in the code above) and it will automatically look for a view called <em>MainPage.xaml</em> in the \Views folder. I quite like this as it matches my usual folder structure for an MVVM project and takes away some of the leg work.</p>
+<p>The container can either register services <em>PerRequest</em>, where a new instance is created every time it is requested, or <em>Singleton</em> which will return the same single instance to each request.</p>
+<p>Caliburn.Micro will automatically set the <em>DataContext</em> of the <em>View</em> to the appropriate <em>ViewModel</em>. It provides a base class <em>PropertyChangedBase</em> to derive your <em>ViewModel</em> classes from which handles the usual <em>INotifyPropertyChanged</em> stuff and provides a <em>NotifyOfPropertyChange</em> method which can either take a property name String or an Expression to represent the property like this:</p>
+<pre name="code" class="c-sharp">
+        private string _myString;
+        public string MyString
+        {
+            get { return _myString; }
+            set
+            {
+                _myString = value;
+                NotifyOfPropertyChange(() =&gt; MyString);
+            }
+        }</pre>
+<p>The advantage of using the expression is that if you rename the property and forget to update the name in the expression, this will result in a compilation error, rather than a run-time binding error if you used a string. Visual Studio's Rename function will also know to change this.</p>
+<p><strong>DataBinding</strong></p>
+<p>With your <em>Views</em> and <em>ViewModels</em> wired up magically as above, Caliburn.Micro then provides you with some nice shorthand for DataBinding. It's important to point out that all of the usual {Binding} syntax works as well.</p>
+<p>If we had a <em>TextBlock</em> in <em>MainPage.xaml</em> and wanted it to show the text contained in the <em>MyString</em> property on <em>MainPageViewModel.cs</em> we can simply do this:</p>
+<pre name="code" class="xml">&lt;TextBlock x:Name="MyString"/&gt;</pre>
+<p>Which is pretty handy, although seems to run out of steam as soon as you want any more complicated binding. If I wanted to not only bind the text to <em>MyString</em> but the foreground colour to another property on my <em>ViewModel</em> you can fall back to the standard Binding markup extension and use both like this:</p>
+<pre name="code" class="xml">&lt;TextBlock x:Name="MyString" Foreground="{Binding MyColour}"/&gt;</pre>
+<p><strong>Commands</strong></p>
+<p>Commands have also been simplified by Caliburn.Micro, let's dive straight in with an example. A <em>Button</em> on my <em>MainPage.xaml</em> defined like this:</p>
+<pre name="code" class="xml">&lt;Button x:Name="ShowMyString"/&gt;</pre>
+<p>Will call the method <em>ShowMyString</em> on the <em>MainPageViewModel.cs</em> on click.</p>
+<p>This is again quite powerful, but worth bearing in mind that by default will wire up every event on the element to that method. If you want further control, you can use the following syntax to explicitly wire up just the Click event:</p>
+<pre name="code" class="xml">&lt;Button cal:Message.Attach="[Event Click] = [Action ShowMyString]"/&gt;</pre>
+<p>You can pass parameters into the method like this:</p>
+<pre name="code" class="xml">&lt;Button cal:Message.Attach="[Event Click] = [Action ShowMyString($this)]"/&gt;</pre>
+<p>Which will pass a reference to the UI element the action is attached to. Other parameters are as follows:</p>
+<ul>
+<li><strong>$eventArgs</strong> - The <em>EventArgs</em> or input parameter for your action.</li>
+<li><strong>$dataContext</strong> - The <em>DataContext</em> of the element that the action is attached to.</li>
+<li><strong>$source</strong> - The <em>FrameworkElement</em> that triggered this action.</li>
+<li><strong>$view</strong> - The <em>View</em> that is associated with this <em>ViewModel</em>.</li>
+<li><strong>$eventArgs</strong> - The <em>EventArgs</em> or input parameter for your action.</li>
+</ul>
+<p>To hook into the <em>CanExecute</em> part of <em>ICommand</em> you simply create a method called <em>CanShowMyString()</em> in your <em>ViewModel</em> (just prefix the execute method name with "Can"). To update this and ensure that the<em> CanExecute</em> is re-evaluated make sure you call:</p>
+<pre name="code" class="c-sharp">NotifyOfPropertyChange(() =&gt; CanShowMyString);</pre>
+<p>where appropriate.</p>
+<p>&nbsp;</p>
+<p>And that concludes my first quick look at Caliburn.Micro. There are lots more to it than I've covered here but you can see how the "magic" can make for some very powerful yet clear and easy to maintain (once you know what its doing) MVVM abstraction. I'll keep playing and post a follow-up article when I get further along with my app.</p>

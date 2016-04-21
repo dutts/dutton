@@ -1,0 +1,89 @@
+---
+layout: post
+title: Auto-scrolling a WPF ListView when a new item is added
+date: 2013-08-13 09:51:40.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- .Net
+- C#
+- Software Development
+- WPF
+tags:
+- .NET
+- auto
+- auto-scroll on new item
+- autoscroll
+- autoscrolling ListView
+- c#
+- ListView
+- programming
+- scroll
+- WPF
+meta:
+  _edit_last: '2'
+  _post_restored_from: a:3:{s:20:"restored_revision_id";i:2772;s:16:"restored_by_user";i:2;s:13:"restored_time";i:1376383744;}
+  _wpas_done_all: '1'
+  _wpas_skip_2785187: '1'
+  _wpas_skip_3579159: '1'
+  _wpas_skip_2785197: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461315238;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:444;}i:1;a:1:{s:2:"id";i:1852;}i:2;a:1:{s:2:"id";i:323;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>AKA: "How to give a WPF ListView a sticky bottom" but I thought better of making that the blog post title =)</p>
+<p>If you've ever tried to auto-scroll a WPF ListView when a new item is added, you will find that as you can't access the ListView's internal ScrollViewer from XAML this is a trickier task than it should be.</p>
+<p>Here is an auto-scrolling ListView that will ensure that any new items added will be automatically scrolled into view. This behavior is overridden if the scrollbar position is not currently at the bottom.</p>
+<pre name="code" class="c-sharp">
+public class AutoScrollingListView : ListView
+{
+  private ScrollViewer _scrollViewer;
+
+  protected override void OnItemsSourceChanged(System.Collections.IEnumerable oldValue, System.Collections.IEnumerable newValue)
+  {
+    base.OnItemsSourceChanged(oldValue, newValue);
+
+    if (oldValue as INotifyCollectionChanged != null)
+      (oldValue as INotifyCollectionChanged).CollectionChanged -= ItemsCollectionChanged;
+
+    if (newValue as INotifyCollectionChanged == null) return;
+
+    (newValue as INotifyCollectionChanged).CollectionChanged += ItemsCollectionChanged;
+  }
+
+  public override void OnApplyTemplate()
+  {
+    base.OnApplyTemplate();
+
+    // Dig out and store a reference to our internal ScrollViewer
+    _scrollViewer = RecursiveVisualChildFinder&lt;ScrollViewer&gt;(this) as ScrollViewer;
+  }
+
+  void ItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+  {
+    if (_scrollViewer == null) return;
+
+    if (!_scrollViewer.VerticalOffset.Equals(_scrollViewer.ScrollableHeight)) return;
+
+    UpdateLayout();
+    _scrollViewer.ScrollToBottom();
+  }
+
+  private static DependencyObject RecursiveVisualChildFinder&lt;T&gt;(DependencyObject rootObject)
+  {
+    var child = VisualTreeHelper.GetChild(rootObject, 0);
+    if (child == null) return null;
+
+    return child.GetType() == typeof (T) ? child : RecursiveVisualChildFinder&lt;T&gt;(child);
+  }
+}</pre>
+<p>As you can see, we derive from ListView, and do two things:</p>
+<ul>
+<li>When the template is applied, we search the visual tree for the scrollviewer and store its reference.</li>
+<li>Override the OnItemsSourceChanged event handler and hook into the CollectionChanged event on the ItemsSource. This way we know when things have been added to the underlying bound ObservableCollection. When the collection changes, we can then call ScrollToBottom on our ScrollViewer reference.</li>
+</ul>

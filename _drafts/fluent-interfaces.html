@@ -1,0 +1,57 @@
+---
+layout: post
+title: Fluent Interfaces
+date: 
+type: post
+published: false
+status: draft
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>http://randypatterson.com/2007/09/how-to-design-a-fluent-interface/</p>
+<p>&nbsp;</p>
+<p>public class Thing<br />
+{<br />
+private readonly ThingFluentInterface _set;<br />
+public ThingFluentInterface Set<br />
+{<br />
+get<br />
+{<br />
+return _set;<br />
+}<br />
+}</p>
+<p>public string Name { get; set; }<br />
+public int Age { get; set; }</p>
+<p>public Thing()<br />
+{<br />
+Name = "Default Name";<br />
+Age = 99;<br />
+_set = new ThingFluentInterface(this);<br />
+}</p>
+<p>public class ThingFluentInterface<br />
+{<br />
+private readonly Thing _thing;</p>
+<p>public ThingFluentInterface(Thing thing)<br />
+{<br />
+_thing = thing;<br />
+}</p>
+<p>public ThingFluentInterface Name(string name)<br />
+{<br />
+_thing.Name = name;<br />
+return this;<br />
+}</p>
+<p>public ThingFluentInterface Age(int age)<br />
+{<br />
+_thing.Age = age;<br />
+return this;<br />
+}<br />
+}<br />
+}</p>

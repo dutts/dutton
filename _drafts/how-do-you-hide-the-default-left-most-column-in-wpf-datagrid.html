@@ -1,0 +1,22 @@
+---
+layout: post
+title: How do you hide the default left-most column in WPF DataGrid
+date: 
+type: post
+published: false
+status: draft
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>While working on tidying up the layout of my app, I needed to remove the narrow column which is added by default to the WPF DataGrid and lets you select the entire corresponding row by clicking on it. Turns out it's called a RowHeader, and you can set its width like this</p>
+<p>RowHeaderWidth="0"<br />
+HeadersVisibility="Column"</p>
+<p>no RowHeadersVisibile (WinForms)</p>

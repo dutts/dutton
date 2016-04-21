@@ -1,0 +1,83 @@
+---
+layout: post
+title: Handling events from within a ControlTemplate in WPF
+date: 2010-02-13 07:00:42.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- C#
+- Software Development
+- WPF
+tags:
+- button
+- c#
+- event
+- events
+- events inside a ControlTemplate
+- events within a ControlTemplate
+- GetTemplateChild
+- OnApplyTemplate
+- programming
+- RoutedEvent
+- RoutedEventhandler
+- WPF
+meta:
+  _edit_last: '2'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461242672;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:2172;}i:1;a:1:{s:2:"id";i:325;}i:2;a:1:{s:2:"id";i:346;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>Here's an interesting one that had me stumped for a few hours.</p>
+<p>Following on from my <a href="http://www.dutton.me.uk/2010/02/13/how-to-create-a-controltemplate-for-a-wpf-textbox/" target="_blank">previous post</a>, where I explained how to create a ControlTemplate to style a TextBox in WPF, I've got an object, TextEntryBox, which dervies from a TextBox (it provides some custom event handlers when text is entered, but to all intents and purposes, it's a regular TextBox).</p>
+<p>I wanted to style my TextEntryBox, this time including a button within my ControlTemplate (this will eventually toggle an on-screen keyboard pop-up, but that's another blog post!). I came up with this:<br />
+<!--more--></p>
+<pre name="code" class="xml">
+<style targettype="{x:Type my:EntryTextBox}">
+    <Setter Property="Template">
+        <Setter.Value>
+            <ControlTemplate TargetType="{x:Type my:EntryTextBox}">
+                <DockPanel>
+                    <Border BorderThickness="1" 
+                    	HorizontalAlignment="Stretch" 
+                    	BorderBrush="DarkGray" 
+                    	Background="White" 
+                    	Width="100">
+                        <DockPanel>
+                            <Button x:Name="PART_KeyboardPopupButton" 
+                            	DockPanel.Dock="Right" 
+                            	Width="15" 
+                            	Height="10"/>
+                            <ScrollViewer Margin="0" 
+                            	Background="Transparent" 
+                            	HorizontalAlignment="Stretch" 
+                            	x:Name="PART_ContentHost"/>
+                        </DockPanel>
+                    </Border>
+                </DockPanel>
+            </ControlTemplate>
+        </Setter.Value>
+    </Setter>
+</style>
+</pre>
+<p>All's well and good, until I want to try and handle the Click event for that button within my TextEntryBox class. Even Matthew MacDonald's "Pro WPF in C# 2008" which has proved a lifesaver for all things WPF since I've been working with this technology only had the following words of wisdom;</p>
+<blockquote><p>"You can't attach event handlers in the control template. Instead, you'll need to give your elements recognizable names and attach event handlers to them programmatically in the control constructor"</p></blockquote>
+<p>But whatever I tried I couldn't access the event in my constructor, until I remembered the seperation between the visual and logical trees in WPF.</p>
+<p>The template is applied at runtime, and so elements contained within it it are part of the visual tree. My class, and therefore my class' constructor is executed within the logical tree, so I needed to attach my event handler after the template had been applied. You can do this by overriding OnApplyTemplate in your class, obtain the template that's being applied, and then you have access to the named button's events, like this:</p>
+<pre name="code" class="c-sharp">
+public override void OnApplyTemplate()
+{
+    DependencyObject d = GetTemplateChild("PART_KeyboardPopupButton");
+    if (d != null)
+    {
+        (d as Button).Click += new RoutedEventHandler(KeyboardPopupButton_Click);
+    }
+
+    base.OnApplyTemplate();
+}
+</pre>
+<p>Note the null check, as someone could have applied a completely different template to the object.</p>

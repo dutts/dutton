@@ -1,0 +1,104 @@
+---
+layout: post
+title: A PRISM Notifying Backing Property Snippet for Visual Studio
+date: 2014-03-13 11:57:53.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- PRISM
+- Software Development
+- Visual Studio 2013
+tags:
+- .NET
+- c#
+- microsoft
+- notifying property changed
+- PRISM
+- programming
+- snippet
+- visual studio
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _wpas_skip_2785187: '1'
+  _wpas_skip_3579159: '1'
+  _wpas_skip_2785197: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461238025;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:405;}i:1;a:1:{s:2:"id";i:2112;}i:2;a:1:{s:2:"id";i:519;}}}}
+  _wpcom_is_markdown: '1'
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>When writing View Models deriving from NotifyingObject in PRISM I find myself endlessly having to write public notifying properties backed by private fields. To save my fingers, here's a Visual Studio snippet I use:</p>
+<pre name="code" class="xml">
+<?xml version="1.0" encoding="utf-8"?>
+<codesnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <codesnippet format="1.0.0">
+    <header>
+      <snippettypes>
+        <snippettype>Expansion</snippettype>
+      </snippettypes>
+      <title>PRISMNotifyingBackedProperty</title>
+      <author>Richard Dutton</author>
+      <description>A PRISM Notifying Backed Property</description>
+      <helpurl>
+      </helpurl>
+      <shortcut>propprism</shortcut>
+    </header>
+    <snippet>
+      <declarations>
+        <literal editable="true">
+          <id>_myProperty</id>
+          <tooltip>Private backing property name</tooltip>
+          <default>_myProperty</default>
+          <function>
+          </function>
+        </literal>
+        <literal editable="true">
+          <id>MyProperty</id>
+          <tooltip>Public property name</tooltip>
+          <default>MyProperty</default>
+          <function>
+          </function>
+        </literal>
+        <object editable="true">
+          <id>int</id>
+          <tooltip>Property type</tooltip>
+          <default>int</default>
+          <function>
+          </function>
+          <type>
+          </type>
+        </object>
+      </declarations>
+      <code language="csharp">
+        <![CDATA[private $int$ $_myProperty$; 
+public $int$ $MyProperty$ 
+{ 
+    get { return $_myProperty$; } 
+    set 
+    { 
+        if ($_myProperty$ == value) return; 
+        $_myProperty$ = value; 
+        RaisePropertyChanged(() => $MyProperty$); 
+    } 
+}]]>
+      </code>
+    </snippet>
+  </codesnippet>
+</codesnippets>
+</pre>
+<p>To use it:</p>
+<ul>
+<li>Copy and paste the xml into a new file.</li>
+<li>Save it as "PRISMNotifyingBackedProperty.snippet".</li>
+<li>In Visual Studio open the <em>Code Snippet Manager</em> (Tools -> Code Snippets Manager). </li>
+<li>Click the <em>Import</em> button and navigate to the file you saved.</li>
+<li>When it prompts you where to add the snippet, chose <em>My Code Snippets</em>, click <em>Finish</em>, then <em>OK</em>.</li>
+</ul>
+<p>You can now type "propprism" into your code and hit <em>Tab</em> to insert the snippet.</p>
+<p>Hope this helps.</p>

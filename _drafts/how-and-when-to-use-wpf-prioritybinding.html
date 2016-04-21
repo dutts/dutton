@@ -1,0 +1,31 @@
+---
+layout: post
+title: How and when to use WPF PriorityBinding
+date: 
+type: post
+published: false
+status: draft
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>DataBinding works like this:</p>
+<ul>
+<li>The binding path resolves.</li>
+<li>The value converter, if specified can convert the value.</li>
+<li>The resulting value is valid for the property you are binding the value to (the binding target, e.g. TextProperty on TextBlock).
+</li>
+</ul>
+<p>If the either of the firts two steps result in a DependencyProperty.UnsetValue, the target proprety will be set to the value of FallbackValue.</p>
+<p><strong>FallbackValue</strong><br />
+http://msdn.microsoft.com/en-us/library/system.windows.data.bindingbase.fallbackvalue.aspx</p>
+<p><strong>PriorityBinding</strong><br />
+http://msdn.microsoft.com/en-us/library/system.windows.data.prioritybinding.aspx<br />
+NB: PriorityBinding will treat a null string as a successful binding.</p>

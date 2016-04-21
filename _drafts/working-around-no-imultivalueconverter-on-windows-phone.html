@@ -1,0 +1,81 @@
+---
+layout: post
+title: Working around no IMultiValueConverter on Windows Phone
+date: 
+type: post
+published: false
+status: draft
+categories: []
+tags: []
+meta:
+  _edit_last: '2'
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>I wanted to create a simple watermarked TextBox in my Windows Phone 8 app; a TextBox that shows some text when it doesn't have focus or any actual content, like this.</p>
+<p><img class="alignnone size-full wp-image-872" alt="Watermarked TextBox" src="{{ site.baseurl }}/assets/watermarkedtextbox.png" width="464" height="79" /></p>
+<p>If this was a regular WPF app, I'd The problem is, as I mentioned previously, Windows Phone doesn't have support for IMultiBindingConverter.</p>
+<p>C#</p>
+<p>    public partial class WatermarkedTextBox : UserControl<br />
+    {<br />
+        public WatermarkedTextBox()<br />
+        {<br />
+            InitializeComponent();<br />
+            GotFocus += WatermarkedTextBox_GotFocus;<br />
+            LostFocus += WatermarkedTextBox_LostFocus;<br />
+        }</p>
+<p>        void WatermarkedTextBox_LostFocus(object sender, RoutedEventArgs e)<br />
+        {<br />
+            if (Text.Length == 0)<br />
+            {<br />
+                ShowWatermark();<br />
+            }<br />
+        }</p>
+<p>        void WatermarkedTextBox_GotFocus(object sender, RoutedEventArgs e)<br />
+        {<br />
+            HideWatermark();<br />
+        }</p>
+<p>        public Visibility WatermarkVisibility<br />
+        {<br />
+            get { return (Visibility)GetValue(WatermarkVisibilityProperty); }<br />
+            set { SetValue(WatermarkVisibilityProperty, value); }<br />
+        }<br />
+        public static readonly DependencyProperty WatermarkVisibilityProperty =<br />
+            DependencyProperty.Register("WatermarkVisibility", typeof(Visibility), typeof(WatermarkedTextBox), new PropertyMetadata(Visibility.Visible));</p>
+<p>        public string WatermarkText<br />
+        {<br />
+            get { return (string)GetValue(WatermarkTextProperty); }<br />
+            set { SetValue(WatermarkTextProperty, value); }<br />
+        }<br />
+        public static readonly DependencyProperty WatermarkTextProperty =<br />
+            DependencyProperty.Register("WatermarkText", typeof(string), typeof(WatermarkedTextBox), new PropertyMetadata(""));</p>
+<p>        public string Text<br />
+        {<br />
+            get { return (string)GetValue(TextProperty); }<br />
+            set { SetValue(TextProperty, value); }<br />
+        }<br />
+        public static readonly DependencyProperty TextProperty =<br />
+            DependencyProperty.Register("Text", typeof(string), typeof(WatermarkedTextBox), new PropertyMetadata(""));</p>
+<p>        private void ShowWatermark()<br />
+        {<br />
+            WatermarkVisibility = System.Windows.Visibility.Visible;<br />
+        }</p>
+<p>        private void HideWatermark()<br />
+        {<br />
+            WatermarkVisibility = System.Windows.Visibility.Collapsed;<br />
+        }<br />
+    }</p>
+<p>WPF</p>
+<p><usercontrol x:class="MyApp.Controls.WatermarkedTextBox" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:ignorable="d" fontfamily="{StaticResource PhoneFontFamilyNormal}" fontsize="{StaticResource PhoneFontSizeNormal}" foreground="{StaticResource PhoneForegroundBrush}" d:designheight="480" d:designwidth="480" datacontext="{Binding RelativeSource={RelativeSource Self}}"></p>
+<p>    <grid x:name="LayoutRoot" background="{StaticResource PhoneChromeBrush}"><br />
+        <grid.rowdefinitions><br />
+            <rowdefinition /><br />
+        </grid.rowdefinitions></p>
+<p>        <textblock text="{Binding WatermarkText, Mode=TwoWay}" grid.row="0" margin="20" visibility="{Binding WatermarkVisibility, Mode=TwoWay}" /><br />
+        <textbox grid.row="0" horizontalalignment="Stretch" verticalalignment="Stretch" text="{Binding Text, Mode=TwoWay}" acceptsreturn="True" textwrapping="Wrap" margin="0" padding="0" /><br />
+    </grid><br />
+</usercontrol></p>

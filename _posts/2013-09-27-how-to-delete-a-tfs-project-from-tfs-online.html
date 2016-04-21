@@ -1,0 +1,39 @@
+---
+layout: post
+title: How to delete a TFS Project from TFS Online
+date: 2013-09-27 20:07:47.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- Microsoft
+- Team Foundation Service
+tags:
+- delete
+- delete project
+- delete tfs project
+- microsoft
+- team foundation service
+- tfs online
+- tfsdeleteproject
+- visualstudio.com
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461198507;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:2112;}i:1;a:1:{s:2:"id";i:510;}i:2;a:1:{s:2:"id";i:477;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>Microsoft have pulled an absolute blinder giving us <a href="http://tfs.visualstudio.com/en-us/tfs-welcome.aspx">Team Foundation Service</a>, their TFS in the Cloud solution, but once you've fired off a few test projects to play with it and want to get on with some proper codeage, how do you delete them?</p>
+<p>There's currently no way of doing that through their web interface, so you have to rely on the command prompt and either at least Visual Studio 2012 or the free <a href="http://www.microsoft.com/en-us/download/details.aspx?id=30656">Team Explorer 2012</a> to give you the tfsdeleteproject.exe command.</p>
+<p>Here's how:</p>
+<ol>
+<li>Fire up a command prompt (Start -&gt; Run "<em>cmd.exe</em>")</li>
+<li>Navigate to where you've installed one of the above tools (<em>cd "C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE"</em>)</li>
+<li>Run <em>tfsdeleteproject.exe /force /collection:https://&lt;your tfs online collection name&gt;.visualstudio.com/DefaultCollection "your project name"</em></li>
+</ol>
+<p>The key thing to remember here is the "/DefaultCollection". Even with the /force argument you'll be prompted before deleting.</p>

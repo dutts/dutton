@@ -1,0 +1,35 @@
+---
+layout: post
+title: Rolling back to previous ClickOnce versions
+date: 2011-09-07 17:12:23.000000000 +01:00
+type: post
+published: true
+status: publish
+categories:
+- .Net
+- Microsoft
+- Software Development
+tags:
+- .NET
+- back
+- click once
+- clickonce
+- deployment
+- programming
+- roll
+- roll back
+- rollback
+meta:
+  _edit_last: '2'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461271784;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:2112;}i:1;a:1:{s:2:"id";i:3782;}i:2;a:1:{s:2:"id";i:91;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>I've been deploying software using Microsoft's ClickOnce mechanism a lot lately and despite enjoying  its simplicity, especially in comparison to some of the more complicated MSI Setup Projects I've inherited, I've found myself slightly nervous about its abililty to turn a simple software code update into a potentially massively distributed network of fail with its Auto Updating feature.</p>
+<p>Because of this, you occasionally have a rather urgent need to roll back everyone to the last working version, and this turns out to be rather easy.<!--more--></p>
+<p>In the publish's output folder you will see a file called "&lt;application name&gt;.application". This is the ClickOnce Application Deployment Manifest and contains a load of details about the application and in particular the version to install and where to find it.</p>
+<p>You will also see an "Application Files" folder which will contain a folder for each version of your application deployed so far. To revert all of your users to a previous version, simply copy the "&lt;application name&gt;.application" file from the relevant version subdirectory over the one in the root, then either point your users at your ClickOnce location or if you had the application set to check for and apply updates automatically just tell them to restart. The application will detect that there is a "newer" version (even if that version is in fact older) and allow the user to install it.</p>

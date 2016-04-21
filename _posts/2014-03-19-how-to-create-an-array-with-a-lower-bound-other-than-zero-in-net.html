@@ -1,0 +1,41 @@
+---
+layout: post
+title: How to create an array with a lower bound other than zero in .Net
+date: 2014-03-19 21:50:09.000000000 +00:00
+type: post
+published: true
+status: publish
+categories:
+- .Net
+- C#
+- Software Development
+tags:
+- .NET
+- array
+- c#
+- CreateArray
+- lower bounded offset
+- offset array
+- programming
+meta:
+  _edit_last: '2'
+  _wpas_done_all: '1'
+  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461197129;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:518;}i:1;a:1:{s:2:"id";i:1002;}i:2;a:1:{s:2:"id";i:181;}}}}
+author:
+  login: admin
+  email: richard@dutton.me.uk
+  display_name: richard
+  first_name: ''
+  last_name: ''
+---
+<p>Did you know that you can create an Array with a lower bound other than zero in .Net?</p>
+<p>A good friend of mine (cheers Jarek) showed me this a while back. I'm still yet to find a real-world application but it's interesting all the same.</p>
+<p><a href="http://msdn.microsoft.com/en-us/library/System.Array.aspx" target="_blank">Array</a> has a method called <a href="http://msdn.microsoft.com/en-us/library/system.array.createinstance.aspx" target="_blank">CreateInstance</a>, which is useful if you want to create an Array during run-time of a Type which might not be known beforehand. This will create an array of integers with length 5:</p>
+<pre name="code" class="c-sharp">
+var array = Array.CreateInstance(typeof(int), 5);
+</pre>
+<p>One overload also lets you specify the lower bounds of the array. It is used to create multi-dimensional arrays, so you pass in arrays of lengths and bounds. This will create an array of integers, with length 50, indexed from 10.</p>
+<pre name="code" class="c-sharp">
+var array = Array.CreateInstance(typeof(int), new int[] {50}, new int[] {10});
+</pre>
+<p>I suppose this may come in useful when trying to model an existing offset numbering scheme in your domain, but has anyone come across this or used it before?</p>
