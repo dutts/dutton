@@ -12,7 +12,7 @@ title: dutton.me.uk - Software Engineering, Photography, Travel, Stuff…
 description: > # this means to ignore newlines until "baseurl:"
   #words
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "http://www.dutton.me.uk" # the base hostname & protocol for your site
+url: "http://dutts.github.io/dutton/" # the base hostname & protocol for your site
 twitter_username: dutts303
 github_username:  dutts
 permalink:    /:year/:month/:day/:title/
