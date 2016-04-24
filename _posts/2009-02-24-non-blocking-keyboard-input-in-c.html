@@ -16,15 +16,7 @@ tags:
 - non-blocking
 - non-blocking keyboard input
 - programming
-meta:
-  _edit_last: '2'
-  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461293493;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:323;}i:1;a:1:{s:2:"id";i:545;}i:2;a:1:{s:2:"id";i:1002;}}}}
-author:
-  login: admin
-  email: richard@dutton.me.uk
-  display_name: richard
-  first_name: ''
-  last_name: ''
+author: Richard
 ---
 <p>I know this one is pretty noddy, but these posts are as much a way of me storing code snippets I might need quickly in the future as any form of 'public service' so I'll post it anyway.</p>
 <p>I quite frequently want to capture key presses in my apps, and to do this I use Console.ReadKey which returns a nice ConsoleKeyInfo object to tell me what's just been pressed. The problem is this call blocks until a key has been pressed and sometimes I don't want to block out the main execution thread or have to create a separate thread *just* to handle the keyboard input.</p>

@@ -18,19 +18,7 @@ tags:
 - performance
 - programming
 - switch
-meta:
-  _edit_last: '2'
-  _publicize_facebook_user: https://www.facebook.com/dutts303
-  _publicize_twitter_user: '@dutts303'
-  _wpcom_is_markdown: '1'
-  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461272390;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:4312;}i:1;a:1:{s:2:"id";i:109;}i:2;a:1:{s:2:"id";i:518;}}}}
-  _wpas_done_all: '1'
-author:
-  login: admin
-  email: richard@dutton.me.uk
-  display_name: richard
-  first_name: ''
-  last_name: ''
+author: Richard
 ---
 <p>I recently found myself needing to convert a calculation on ints to use double values. One of the functions within this calculation was a switch statement and as switch only supports <a href="https://msdn.microsoft.com/en-us/library/exx3b86w.aspx" target="_blank">integral </a>types, this needed more than just a type change.</p>
 <p>I was fortunate in that this particular double value was always at most one decimal place which left me with two possible options; either replace the switch with a bunch of sequential if statements or multiply the double by 10, cast it to an int and switch on the resulting int.</p>

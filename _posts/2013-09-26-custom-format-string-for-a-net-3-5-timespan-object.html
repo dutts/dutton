@@ -18,19 +18,7 @@ tags:
 - format string
 - programming
 - timespan
-meta:
-  _edit_last: '2'
-  _wpas_done_all: '1'
-  _wpas_skip_2785187: '1'
-  _wpas_skip_3579159: '1'
-  _wpas_skip_2785197: '1'
-  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461296987;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:1002;}i:1;a:1:{s:2:"id";i:1732;}i:2;a:1:{s:2:"id";i:181;}}}}
-author:
-  login: admin
-  email: richard@dutton.me.uk
-  display_name: richard
-  first_name: ''
-  last_name: ''
+author: Richard
 ---
 <p>Hmm, turns out TimeSpan only supports custom ToString formatting from .Net 4 onwards....</p>
 <p>So here's a noddy extension method. Supports h for hours, m for minutes, s for seconds (along with hh for zero padding, and so on) and passes any other characters through to the output. It's all I needed but could be easily extended.</p>

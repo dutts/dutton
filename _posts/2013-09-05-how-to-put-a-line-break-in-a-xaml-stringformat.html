@@ -21,16 +21,7 @@ tags:
 - programming
 - stringformat
 - WPF
-meta:
-  _edit_last: '2'
-  _wpas_done_all: '1'
-  _jetpack_related_posts_cache: a:1:{s:32:"8f6677c9d6b0f903e98ad32ec61f8deb";a:2:{s:7:"expires";i:1461271284;s:7:"payload";a:3:{i:0;a:1:{s:2:"id";i:1732;}i:1;a:1:{s:2:"id";i:518;}i:2;a:1:{s:2:"id";i:378;}}}}
-author:
-  login: admin
-  email: richard@dutton.me.uk
-  display_name: richard
-  first_name: ''
-  last_name: ''
+author: Richard
 ---
 <p>One of the new features introduced way back in .Net 3.5SP1 was <a href="http://msdn.microsoft.com/en-us/library/system.windows.data.bindingbase.stringformat(v=vs.90).aspx">StringFormat</a>. This allows you to define the format of the output if the bound value is a string.</p>
 <p>It turns out that this is a lot more efficient than using multiple Runs in TextBlocks to concatenate strings and bound values, so in my quest for "ultimate WPF performance" (TM) this was my latest victim. My old code in a pop-up looked something like this:</p>
