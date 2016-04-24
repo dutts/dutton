@@ -17,8 +17,5 @@ twitter_username: dutts303
 github_username:  dutts
 permalink:    /:year/:month/:day/:title/
 
-paginate: 5
-paginate_path: "/dutton/page:num/"
-
 # Build settings
 markdown: kramdown
