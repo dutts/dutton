@@ -10,18 +10,19 @@
     position: relative;
 }
 
-.site-title {
-    font-size: 26px;
-    font-weight: 300;
-    line-height: 56px;
-    letter-spacing: -1px;
-    margin-bottom: 0;
-    float: left;
+a.site-title {
+    color: #36bcab;
+    font-family: 'Oswald', Helvetica, Arial, sans-serif;
+    font-weight: normal;
+    font-size: 80px;
+    margin: 0px;
+    text-transform: uppercase;
+    text-rendering: optimizeLegibility;
+    text-decoration: none;
+}
 
-    &,
-    &:visited {
-        color: $grey-color-dark;
-    }
+a.site-title:hover {
+    color: $text-color;
 }
 
 .site-nav {

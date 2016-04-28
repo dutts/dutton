@@ -13,10 +13,17 @@ dl, dd, ol, ul, figure {
 /**
  * Basic styling
  */
+html {
+    height: 100%; /* Fix allowing body gradient to stay put on long pages */
+}
+
 body {
     font: $base-font-weight #{$base-font-size}/#{$base-line-height} $base-font-family;
     color: $text-color;
     background-color: $background-color;
+    background-image: -webkit-linear-gradient( rgba(0,0,0,0.22), rgba(255,255,255,0) 80px );
+    background-image:    -moz-linear-gradient( rgba(0,0,0,0.22), rgba(255,255,255,0) 80px );
+    background-repeat: repeat-x;
     -webkit-text-size-adjust: 100%;
     -webkit-font-feature-settings: "kern" 1;
     -moz-font-feature-settings: "kern" 1;
@@ -100,7 +107,6 @@ a {
 
     &:hover {
         color: $text-color;
-        text-decoration: underline;
     }
 }
 

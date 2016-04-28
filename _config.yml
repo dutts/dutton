@@ -8,10 +8,10 @@
 gems: [jekyll-paginate]
 
 # Site settings
-title: dutton.me.uk - Software Engineering, Photography, Travel, Stuff…
+title: Richard Dutton
 description: > # this means to ignore newlines until "baseurl:"
   #words
-baseurl: "/dutton" # the subpath of your site, e.g. /blog
+baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://dutts.github.io" # the base hostname & protocol for your site
 twitter_username: dutts303
 github_username:  dutts
