@@ -9,12 +9,10 @@ name:               "Dutton"
 
 author:
   name:             Richard Dutton
-  facebook:         your-id
-  twitter:          your-id
-  github:           your-id
-  linkedin:         your-id
-  medium:           your-id
-  tumblr:           your-id
+  facebook:         dutts303
+  twitter:          dutts303
+  github:           dutts
+  linkedin:         richarddutton
   email:            richard@dutton.me.uk
 
 # Google-analytics
@@ -53,7 +51,7 @@ nav:
   - name:           "Tags"
     url:            "/tags"
   - name:           "Github"
-    url:            "https://github.com/AWEEKJ/Kiko-plus"
+    url:            "https://github.com/dutts"
 
 
 
