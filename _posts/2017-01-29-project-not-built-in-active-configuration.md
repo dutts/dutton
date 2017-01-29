@@ -4,7 +4,7 @@ title:  "\"Project not built in active configuration\" for new .Net Core Console
 date:   2017-01-29 13:45:00 -0000
 categories: .net core, console application, project not built in active configuration, visual studio mac
 ---
-As is a despressingly regular occurence, it seems that every time I have a flash of inspiration and decide to work on a new project outside of the relatively safe ecosystem that is C# .Net under Visual Studio 2017 on my Windows 10 machine I come a cropper, and today was no exception.
+As is a depressingly regular occurrence, it seems that every time I have a flash of inspiration and decide to work on a new project outside of the relatively safe ecosystem that is C# .Net under Visual Studio 2017 on my Windows 10 machine I come a cropper, and today was no exception.
 
 Buoyed by the enthusiasm of a new project, I fired up Visual Studio for Mac only to be prompted that it wants to update some components. Fine, I grabbed a coffee while it cracked on bringing my IDE up to date with the latest Stable. Once finished I created a new .Net Core Console project and was hoping to crack on, only to discover my first hurdle. 
 
